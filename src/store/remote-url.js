@@ -1,0 +1,1 @@
+export const HTTPURL = 'http://172.19.17.156:8901/Portal/ac.se'

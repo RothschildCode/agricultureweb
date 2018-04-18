@@ -1,0 +1,10 @@
+/**
+ *	回填类型
+ */
+
+//套餐
+export const BACKFILL_SERV_PACK = 'BACKFILL_SERV_PACK'
+//套餐资费
+export const BACKFILL_SERV_PACK_POSTAGE = 'BACKFILL_SERV_PACK_POSTAGE'
+//安装地址
+export const BACKFILL_INSTALL_ADDRESS = 'BACKFILL_INSTALL_ADDRESS'

@@ -1,0 +1,1 @@
+export const UPDATE_USERS_SEL = 'UPDATE_USERS_SEL'
