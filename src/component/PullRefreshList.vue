@@ -1,13 +1,13 @@
 <template>
-	<div class="page-content pull-to-refresh-content" ref="dom">
+	<div class="page-content pull-to-refresh-content infinite-scroll" ref="dom">
 		<div class="pull-to-refresh-layer">
 			<div class="preloader"></div>
 			<div class="pull-to-refresh-arrow"></div>
 		</div>
 		<div class="list-block media-list">
 			<list-item v-for="item in list" :data="item"></list-item>
-			<div class="list-block-label">
-				<p>Just pull page down to let the magic happen.</p>
+			<div class="infinite-scroll-preloader">
+				<div class="preloader"></div>
 			</div>
 		</div>
 	</div>
@@ -21,21 +21,25 @@
 		data() {
 			return {
 				list: [],
-				isbind: false
+				isbind: false,
+				isloading: false
 			}
 		},
 		created() {
 			this.getData()
 		},
 		updated() {
-			console.log('pull refresh updated')
+			var _this = this
 			if(!this.isbind) {
 				this.isbind = true
 				var ptrContent = this.$$(this.$refs.dom)
 				var _this = this
 				ptrContent.on('refresh', function (e) {
-					_this.getData()
-				});				
+					_this.getData(false)
+				});
+				dom.on('infinite', function () {
+					_this.getData(true)
+				});       
 			}
 		},
 		methods: {
