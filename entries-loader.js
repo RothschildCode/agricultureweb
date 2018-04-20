@@ -6,12 +6,12 @@ var path = require('path')
 var webpack = require('webpack')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 var entries = require('./entries')
-var files = glob.sync('./src/apps/*/index.js')
+var files = glob.sync('./src/apps/*.js')
 var entries = {
 	vendor: entries.vendor
 }
 var pages = {}
-var comps = glob.sync('./src/components/*.vue')
+// var comps = glob.sync('./src/components/*.vue')
 var compsEntry = {
     // components: comps
 }
@@ -23,25 +23,26 @@ var commonChunkPlugin = new webpack.optimize.CommonsChunkPlugin({
 // var dllReferencePlugin = new webpack.DllReferencePlugin({
 //     context: __dirname,
 //     manifest: require('./dist/vendor.manifest.json')
-// })
+// })   
 var devPlugins = [commonChunkPlugin]
 var prodPlugins = [commonChunkPlugin]
 
 files.forEach(function(f) {
-	var name = /.*\/(apps\/.*?\/index)\.js/.exec(f)[1];//得到apps/question/index这样的文件名
+	var name = /.*\/(apps\/.*?)\.js/.exec(f)[1];//得到apps/question/index这样的文件名
 	entries[name] = f;
 	var page = './index.html'
     var devPlug =  new HtmlWebpackPlugin({
         // filename: path.resolve(__dirname, '../public/dist/'+ name +'.html'),
         filename: name + '.html',
-        // chunks: ['vendor', 'components', name],
+        hash: true,
+        chunks: ['vendor', name],
         // chunksSortMode: function(c1, c2) {
         // 	var o = ['vendor', 'components', name]
         // 	var o1 = o.indexOf(c1.names[0]);
         //     var o2 = o.indexOf(c2.names[0]);
         //     return o1 - o2;  
         // },
-        template: page,	
+        template: page,
         minify: { //传递 html-minifier 选项给 minify 输出
 	      removeComments: true
 	    },

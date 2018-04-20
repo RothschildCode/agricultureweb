@@ -1,0 +1,2 @@
+export const UPDATE_LIST = 'UPDATE_NEWS_LIST'
+export const UPDATE_DETAIL = 'UPDATE_DETAIL'

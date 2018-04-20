@@ -1,1 +1,1 @@
-export const HTTPURL = 'http://172.19.17.156:8901/Portal/ac.se'
+export const base_url = 'http://peining.tunnel.echomod.cn/university/Interface.php'

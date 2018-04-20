@@ -24,11 +24,6 @@ export function updateBuildingRoute({commit}, {route, callback}) {
 	callback(route)
 }
 
-// export function getBuildingRoute({state}, callback) {
-// 	let route = state.route
-// 	callback(route)
-// }
-
 export function getBuildingData({commit, state}, callback) {
 	var building = state.data
 	// commit(types.UPDATE_BUILDING_SEL, {data: {}})
