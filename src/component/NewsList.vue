@@ -1,24 +1,17 @@
 <script type="text/javascript">
-	import PullRefreshList from './PullRefreshList'
+	import BaseList from './BaseList'
 	import ListItem from './NewItem'
-	import http from '../common/http'
+	import {http} from '../common/http'
 	export default {
-		extends: PullRefreshList,
+		extends: BaseList,
 		methods: {
-			getData(isnext) {
-
-				if(isnext && this.isloading) return
-				this.isloading = true
-
-				var pageIndex = isnext ? (this.pageIndex + 1) : 1
-
+			getData() {
 				var data = {
 					api: 'college_post_list',
-					displayNumber: 15,
-					pageIndex,
+					displayNumber: this.pageSize,
+					pageIndex: this.pageIndex,
 					fid: 2
 				}
-
 				var _this = this
 				http({
 					data,
@@ -29,16 +22,9 @@
 					for(var i = 0; i < list.length; i++) {
 						list[i].cover = 'http://peining.tunnel.echomod.cn/university/images/img_14347674602997.jpg'
 					}
-					if(isnext) {
-						newlist = _this.list.concat(list)
-						_this.isloading = false
-					}else {
-						_this.$f7.pullToRefreshDone()
-					}
-					this.list = newlist
+					_this.loadDone(list)
 				}).catch((err) => {
-					alert('Network Error')
-					_this.$f7.pullToRefreshDone()
+					_this.loadError(err)
 				})
 			}
 		},

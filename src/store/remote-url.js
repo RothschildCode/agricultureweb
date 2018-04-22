@@ -1,1 +1,0 @@
-export const base_url = 'http://peining.tunnel.echomod.cn/university/Interface.php'

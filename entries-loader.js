@@ -8,7 +8,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin')
 var entries = require('./entries')
 var files = glob.sync('./src/apps/*.js')
 var entries = {
-	vendor: entries.vendor
+    vendor: entries.vendor
 }
 var pages = {}
 // var comps = glob.sync('./src/components/*.vue')
@@ -28,41 +28,41 @@ var devPlugins = [commonChunkPlugin]
 var prodPlugins = [commonChunkPlugin]
 
 files.forEach(function(f) {
-	var name = /.*\/(apps\/.*?)\.js/.exec(f)[1];//得到apps/question/index这样的文件名
-	entries[name] = f;
-	var page = './index.html'
+    var name = /.*\/(apps\/.*?)\.js/.exec(f)[1];//得到apps/question/index这样的文件名
+    entries[name] = f;
+    var page = './index.html'
     var devPlug =  new HtmlWebpackPlugin({
         // filename: path.resolve(__dirname, '../public/dist/'+ name +'.html'),
         filename: name + '.html',
         hash: true,
         chunks: ['vendor', name],
         // chunksSortMode: function(c1, c2) {
-        // 	var o = ['vendor', 'components', name]
-        // 	var o1 = o.indexOf(c1.names[0]);
+        //  var o = ['vendor', 'components', name]
+        //  var o1 = o.indexOf(c1.names[0]);
         //     var o2 = o.indexOf(c2.names[0]);
         //     return o1 - o2;  
         // },
-        template: page,
         minify: { //传递 html-minifier 选项给 minify 输出
-	      removeComments: true
-	    },
+        template: page,
+          removeComments: true
+        },
         inject: 'body'
     })
     var prodPlugin = new HtmlWebpackPlugin({
         // filename: path.resolve(__dirname, '../public/dist/'+ name +'.html'),
         filename: name + '.html',
-        // chunks: ['vendor', name, 'components'],
+        hash: true,
+        chunks: ['vendor', 'manifest', name],
         // chunksSortMode: function(c1, c2) {
-        // 	var o = ['vendor', 'components', name]
-        // 	var o1 = o.indexOf(c1.names[0]);
+        //  var o = ['vendor', 'components', name]
+        //  var o1 = o.indexOf(c1.names[0]);
         //     var o2 = o.indexOf(c2.names[0]);
         //     return o1 - o2;  
         // },
-        template: page,	
+        template: page,
         minify: { //传递 html-minifier 选项给 minify 输出
-	      removeComments: true,
-	      collapseWhitespace: false
-	    },        
+          removeComments: true
+        },
         inject: 'body'
     })
     devPlugins.push(devPlug)
@@ -81,7 +81,7 @@ console.log('prod-pages:')
 console.log(prodPlugins)
 
 module.exports = {
-	entries,
-	devPlugins,
-	prodPlugins
+    entries,
+    devPlugins,
+    prodPlugins
 }

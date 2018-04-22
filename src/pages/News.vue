@@ -14,12 +14,7 @@
 </template>
 
 <script>
-
 	import NewsList from '../component/NewsList'
-	import NewItem from '../component/NewItem'
-
-	import http from '../common/http'
-	import {eventbus} from '../common/e'
 	export default {
 		components: {
 			NewsList

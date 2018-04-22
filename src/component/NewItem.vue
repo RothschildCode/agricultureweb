@@ -23,6 +23,10 @@
 		</div>
 		<div class="card-footer">
 			<a v-html="data.cname"></a>
+		<!-- 	<a v-html="data.cname"></a>
+			<a v-html="data.cname">
+				<i class="fa fa-thumbs-o-up fa-1x"></i>
+			</a> -->
 		</div>
 	</div>	
 </template>

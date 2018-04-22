@@ -1,24 +1,79 @@
 import querystring from 'querystring'
 import axios from 'axios'
 
-// var base_url = '/university/Interface.php'
+import {bus} from './bus'
+
+var base_url = '/api/university/Interface.php'
 
 var http = axios.create({
-	url: '/api/university/Interface.php',
-	// baseURL: '/api/university/Interface.php',
+	url: base_url,
 	timeout: 10000,
 	transformRequest: [function (data) {  
-		// Do whatever you want to transform the data 
+		bus.$f7.showIndicator()
 		return querystring.stringify(data)
 	}],
 	transformResponse: [function (data) {
 		return JSON.parse(data).data
 	}],
 	headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+	validateStatus: function(status) {
+		bus.$f7.hideIndicator()
+		var connected = status >= 200 && status < 300
+		if(!connected) {
+			bus.$f7.addNotification({
+				title: '网络错误',
+				subtitle: '网络请求失败,请检查您的网络'
+			})
+		}
+		return connected
+	},
 	proxy: {
 		host: '127.0.0.1',
 		port: 8081
 	}
 })
 
-export default http
+var http_conf = {
+	showIndicator: true
+}
+
+function getHttp(conf) {
+	http_conf = Object.assign(http_conf, conf)
+	let {showIndicator} = http_conf
+	return axios.create({
+		url: base_url,
+		timeout: 10000,
+		transformRequest: [function (data) {  
+			if(showIndicator) {
+				bus.$f7.showIndicator()
+			}
+			return querystring.stringify(data)
+		}],
+		transformResponse: [function (data) {
+			return JSON.parse(data).data
+		}],
+		headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+		validateStatus: function(status) {
+			if(showIndicator) {
+				bus.$f7.hideIndicator()
+			}
+			var connected = status >= 200 && status < 300
+			if(!connected) {
+				bus.$f7.addNotification({
+					title: '网络错误',
+					subtitle: '网络请求失败,请检查您的网络'
+				})
+			}
+			return connected
+		},
+		proxy: {
+			host: '127.0.0.1',
+			port: 8081
+		}
+	})
+}
+
+export {
+	getHttp, 
+	http
+}

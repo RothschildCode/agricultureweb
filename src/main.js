@@ -11,6 +11,8 @@ import jquery from 'jquery'
 
 import util from './util'
 
+import './common/util'
+
 export function initEntry(App) {
   Vue.use(Framework7Vue)
   new Vue({
