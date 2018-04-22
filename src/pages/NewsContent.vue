@@ -56,7 +56,7 @@
 </style>
 
 <script>
-	import {getHttp} from '../common/http'
+	import {http} from '../common/http'
 	export default {
 		data() {
 			return {
@@ -70,7 +70,7 @@
 			getContent() {
 				var pid = $.getUrlParam('pid')
 				var _this = this
-				getHttp()({
+				http({
 					data: {
 						api: 'post_details',
 						pid

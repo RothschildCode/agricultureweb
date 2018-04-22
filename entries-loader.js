@@ -42,8 +42,8 @@ files.forEach(function(f) {
         //     var o2 = o.indexOf(c2.names[0]);
         //     return o1 - o2;  
         // },
-        minify: { //传递 html-minifier 选项给 minify 输出
         template: page,
+        minify: { //传递 html-minifier 选项给 minify 输出
           removeComments: true
         },
         inject: 'body'

@@ -1,7 +1,7 @@
 <script type="text/javascript">
 	import BaseList from './BaseList'
 	import ListItem from './TaskClassifyItem'
-	import {getHttp} from '../common/http'
+	import {http} from '../common/http'
 	export default {
 		extends: BaseList,
 		methods: {
@@ -11,7 +11,7 @@
 					uid: 1
 				}
 				var _this = this
-				getHttp({showIndicator: false})({
+				http({
 					data,
 					method: 'post'
 				}).then((res) => {

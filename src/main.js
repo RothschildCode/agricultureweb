@@ -27,7 +27,7 @@ export function initEntry(App) {
     components: {
       app: App
     }
-  })  
+  })
 }
 
 window.__ComponentExtend__ = {

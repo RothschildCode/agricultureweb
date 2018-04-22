@@ -81,7 +81,6 @@
 				});
 				ptrContent.on('infinite', function () {
 					if(_this.isloading) return
-					_this.isloadErr = false
 					_this.isloading = true
 					_this.pageIndex += 1
 					_this.getData()
@@ -106,7 +105,6 @@
 			},
 			loadError(err) {
 				this.$f7.pullToRefreshDone()
-				this.isloadErr = true
 				this.loadDone(new Array())
 				if(this.list.length <= 0) {
 					this.showhint = true
