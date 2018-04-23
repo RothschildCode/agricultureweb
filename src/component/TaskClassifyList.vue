@@ -1,7 +1,10 @@
 <script type="text/javascript">
 	import BaseList from './BaseList'
 	import ListItem from './TaskClassifyItem'
-	import {http} from '../common/http'
+	import {gethttp} from '../common/http'
+
+	let http = gethttp()
+
 	export default {
 		extends: BaseList,
 		methods: {

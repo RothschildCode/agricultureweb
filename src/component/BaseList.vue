@@ -4,8 +4,8 @@
 			<div class="preloader"></div>
 			<div class="pull-to-refresh-arrow"></div>
 		</div>
-		<div v-if="!showhint" class="list-block media-list">
-			<list-item v-for="item in list" :data="item"></list-item>
+		<div v-if="!showhint" class="list-block media-list" style="margin-top: 0;">
+			<list-item v-for="(item, index) in list" :data="item" :key="index"></list-item>
 			<div v-if="list.length >= pageSize" class="infinite-scroll-preloader">
 				<div class="preloader"></div>
 			</div>
@@ -22,35 +22,9 @@
 				</div>
 			</div>
 		</div>
-
 	</div>
 </template>
 
-<style lang="less">
-	.base-list {
-		.hint {
-			display: flex;
-			align-items: center;
-			text-align: center;
-			height: 100%;
-			.hint-inner {
-				display: flex;
-				flex-direction: column;
-				width: 100%;
-				.hint-media {
-					text-align: center;
-					img {
-						width: 30%;
-					}
-				}
-				.hint-label p{
-					color: #bfbfbf;
-					// font-size: .8em;
-				}
-			}
-		}
-	}
-</style>
 
 <script type="text/javascript">
 	export default {

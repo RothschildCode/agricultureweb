@@ -1,7 +1,10 @@
 <script type="text/javascript">
 	import BaseList from './BaseList'
 	import ListItem from './NewItem'
-	import {http_indicator} from '../common/http'
+	import {gethttp} from '../common/http'
+
+	let http = gethttp()
+
 	export default {
 		extends: BaseList,
 		methods: {
@@ -13,7 +16,7 @@
 					fid: 2
 				}
 				var _this = this
-				http_indicator({
+				http({
 					data,
 					method: 'post'
 				}).then((res) => {

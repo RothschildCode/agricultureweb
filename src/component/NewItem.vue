@@ -1,5 +1,5 @@
 <template>
-	<div class="card">
+	<div class="card" @click="click(data.pid)">
 		<div class="card-header">
 			<div class="list-block media-list">
 	            <div class="item-content">
@@ -22,11 +22,21 @@
 			</div>
 		</div>
 		<div class="card-footer">
-			<a v-html="data.cname"></a>
-		<!-- 	<a v-html="data.cname"></a>
-			<a v-html="data.cname">
-				<i class="fa fa-thumbs-o-up fa-1x"></i>
-			</a> -->
+			<div>
+				<i class="icon iconfont icon-ziyuan2">
+					<span v-html="data.browse_num"></span>
+				</i>
+			</div>
+			<div>
+				<i class="icon iconfont icon-ziyuan1">
+					<span v-html="data.comment_num"></span>
+				</i>
+			</div>
+			<div>
+				<i class="icon iconfont icon-ziyuan">
+					<span v-html="data.praise_num"></span>
+				</i>
+			</div>
 		</div>
 	</div>	
 </template>
@@ -35,8 +45,8 @@
 	export default {
 		props: ['data'],
 		methods: {
-			click(data) {
-
+			click(pid) {
+				window.location.href = './newscontent.html?pid=' + pid + '&webview_transition'
 			}
 		}
 	}

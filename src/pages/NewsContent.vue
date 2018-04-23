@@ -17,7 +17,7 @@
 					                <div class="item-inner">
 					                    <div class="item-title-row">
 					                        <div class="item-title" v-html="data.username"></div>
-					                        <div class="item-after">
+					                        <div class="item-after" @click="showActions()">
 					                        	<i class="f7-icons">more_fill</i>
 					                        </div>
 					                    </div>
@@ -33,30 +33,17 @@
         </f7-pages>
       </f7-view>
     </f7-views>
+
   </div>
 </template>
 
-<style lang="less">
-	.news-content-page {
-		.page-content {
-			background: #fff;
-		}
-		.subject {
-			padding: 0 1em;
-		}
-		.card-header:after {
-			padding: 1em;
-			display: none;
-		}
-		.content {
-			padding: 0 1em;
-			font-size: 1.2em;
-		}
-	}
-</style>
-
 <script>
-	import {http} from '../common/http'
+	import {gethttp} from '../common/http'
+
+	let http = gethttp({
+		indicator: true
+	})
+
 	export default {
 		data() {
 			return {
@@ -83,6 +70,24 @@
 				}).catch((err) => {
 
 				})
+			},
+			showActions() {
+				var buttons = [
+				    {
+				        text: '回复'
+				    },
+				    {
+				        text: '收藏'
+				    },
+				    {
+				        text: '举报',
+				    },
+				    {
+				        text: '取消',
+				        color: 'red'
+				    },
+				];
+				this.$f7.actions(buttons);		
 			}
 		}
 	}
