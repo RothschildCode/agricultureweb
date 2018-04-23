@@ -1,4 +1,5 @@
 @import './font/iconfont.css';
+@import '../iconfont/smile/iconfont.css';
 
 .card {
 	margin-left: 0;
@@ -135,9 +136,15 @@
 	.button {
 		height: 2em;
 		border: none;
+		white-space: initial;
+		text-overflow: clip;
+		.f7-icons {
+			vertical-align: middle;
+			color: #292929;
+			font-size: 1.8em;
+		}
 		.icon {
-			width: 100%;
-			height: 100%;
+			font-size: 2.05em;
 		}
 	}
 }
@@ -156,4 +163,22 @@
 
 .modal-overlay, .picker-modal-overlay, .popup-overlay, .preloader-indicator-overlay {
 	transition-duration: 0s !important;
+}
+
+.brow-panel-wrapper{
+	padding: 1em;
+}
+.brow-item-wrapper {
+	margin: .5em 0;
+	text-align: center;
+}
+.icon {
+	// margin: .5em 0;
+	width: 2em;
+	height: 2em;
+	// font-size: 2.05em;
+	color: #292929;
+	vertical-align: -0.15em;
+	fill: currentColor;
+	// overflow: hidden;	
 }
