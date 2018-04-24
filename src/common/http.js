@@ -71,7 +71,7 @@ function gethttp(c) {
 		timeout: 10000,
 		transformRequest: [function (data) {  
 			if(conf.indicator) {
-				// bus.$f7.showIndicator()
+				bus.$f7.showIndicator()
 			}
 			return querystring.stringify(data)
 		}],
@@ -81,7 +81,7 @@ function gethttp(c) {
 		headers: {'Content-Type': 'application/x-www-form-urlencoded'},
 		validateStatus: function(status) {
 			if(conf.indicator) {
-				// bus.$f7.hideIndicator()
+				bus.$f7.hideIndicator()
 			}
 			var connected = status >= 200 && status < 300
 			if(conf.notification) {

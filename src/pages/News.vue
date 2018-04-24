@@ -4,8 +4,8 @@
     <f7-views>
       <f7-view id="main-view"  main>
         <f7-pages>
-			<div data-page="news" class="page navbar-fixed toobar-fixed news-page">
-				<news-list></news-list>
+			<div data-page="news" class="page toobar-fixed news-page">			
+				<news-wrapper></news-wrapper>
 			</div>
         </f7-pages>
       </f7-view>
@@ -14,10 +14,10 @@
 </template>
 
 <script>
-	import NewsList from '../component/NewsList'
+	import NewsWrapper from '../component/NewsWrapper'
 	export default {
 		components: {
-			NewsList
+			NewsWrapper
 		}
 	}
 </script>

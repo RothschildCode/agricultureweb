@@ -9,27 +9,40 @@
 			  	<div class="editor_panel">
 			  		<textarea v-model="comment" rows="8" class="editor_input editor_content" placeholder="发表您的回复"></textarea>
 			  	</div>
-			  	<p class="buttons-row editor-buttons-panel">
-			  		<a href="#" class="button" @click="blow()">
-			  			<i class="icon iconfont icon-smile"></i>
-			  		</a>
-			  		<a href="#" class="button">
-			  			<i class="f7-icons">images</i>
-			  		</a>
-			  		<a href="#" class="button">
-			  			<i class="f7-icons">camera</i>
-			  		</a>
-			  		<a href="#" class="button">
-			  			<i class=""></i>
-			  		</a>
-			  		<a href="#" class="button">
-			  			<i class=""></i>
-			  		</a>
-			  	</p>
+			  	<div class="media-bar">
+			  		<div class="btn-item" @click="changePanel(1)">
+			  			<i v-if="showCode != 1" class="icon iconfont icon-emoji"></i>
+			  			<i v-if="showCode == 1" class="icon iconfont active icon-emojifill"></i>
+			  		</div>
+			  		<div class="btn-item" @click="changePanel(2)">
+			  			<i v-if="showCode != 2" class="icon iconfont icon-xiangji"></i>
+			  			<i v-if="showCode == 2" class="icon iconfont active icon-camerafill"></i>
+			  			<input type="file" name="" class="upload-input" ref="uploadInput1" @change="uploadChange">
+			  		</div>
+			  		<div class="btn-item" @click="changePanel(2)">
+			  			<i v-if="showCode != 2" class="icon iconfont icon-pic"></i>
+			  			<i v-if="showCode == 2" class="icon iconfont active icon-picfill"></i>
+			  			<input type="file" name="" class="upload-input" ref="uploadInput1" @change="uploadChange">
+			  		</div>
+			  	</div>
 
-			  	<brow-panel v-if="showBlowPanel"></brow-panel>
+			  	<brow-panel v-if="showCode == 1"></brow-panel>
 
-			  	<div v-if="!showBlowPanel" class="row">
+			  	<div v-if="multis.length > 0 && showCode > 1" class="multi-preview">
+			  		<div class="multi-content" :style="{width: (95 * (multis.length + 1)) + 10 + 'px'}">
+				  		<div v-for="(item, index) in multis" class="item">
+				  			<span class="item-span" :style="{'background-image': item}"></span>
+				  			<a class="item-close" @click="removeMulti(index)">
+				  				<span class="btn-close"></span>
+				  			</a>
+				  		</div>
+				  		<div class="item add">
+				  			<input type="file" name="" class="upload-input" ref="uploadInput2" @change="uploadChange">
+				  		</div>			  			
+			  		</div>
+			  	</div>
+
+			  	<div v-if="showCode == 0" class="row">
 			  		<div class="col-20"></div>
 			  		<div class="col-60">
 			  			<a href="#" class="button button-big button-fill" style="margin: 5em 0;" @click="submit()">发布</a>
@@ -43,6 +56,22 @@
         </f7-pages>
       </f7-view>
     </f7-views>
+
+	<!-- Links popover -->
+	<div class="popover popover-links">
+	<div class="popover-angle"></div>
+	<div class="popover-inner">
+	  <div class="list-block">
+	    <ul>
+	      <li><a href="#" class="list-button item-link">回复</a></li>
+	     <!--  <li><a href="#" class="list-button item-link">Link 2</a></li>
+	      <li><a href="#" class="list-button item-link">Link 3</a></li>
+	      <li><a href="#" class="list-button item-link">Link 4</a></li> -->
+	    </ul>
+	  </div>
+	</div>
+	</div>
+
   </div>
 </template>
 
@@ -59,13 +88,15 @@
 		data() {
 			return {
 				comment: '',
-				showBlowPanel: false
+				showCode: 0,
+				multis: [],
+				initUploader: false
 			}
 		},
 		created() {
 			var _this = this
 			bus.$on(EVENT.SEL_BROW, (d) => {
-				_this.comment += '(/' + d.name + '/)'
+				_this.comment += d
 			})
 			this.replyType = $.getUrlParam('reply_type')
 			this.args = {
@@ -74,6 +105,20 @@
 			}
 		},
 		methods: {
+			uploadChange(e) {
+				var _this = this
+				var loader = e.target
+				var _URL = window.URL || window.webkitURL;
+			    var file
+			    if ((file = loader.files[0])) {
+			        var reader = new FileReader();
+			        reader.readAsDataURL(file);
+			        reader.onload = function (e) { 
+			        	_this.selectedMulti(this.result)
+			        }
+			    }
+			    $(loader).val('')
+			},
 			getContent() {
 				var pid = $.getUrlParam('pid')
 				var _this = this
@@ -91,29 +136,45 @@
 
 				})
 			},
-			blow() {
-				this.showBlowPanel = !this.showBlowPanel
+			changePanel(code) {
+				if(code == 1) {
+					code = this.showCode == code ? 0 : code
+				}
+				this.showCode = code
 			},
 			submit() {
 				if(this.comment == '') {
 					this.$f7.alert('内容不能为空', '')
 					return
 				}
+				var api = this.args.cid ? 'insert_reply' : 'insert_comment'
 				var param = {
-					comment: this.comment,
-					pid: this.args.pid
+					api,
+					pid: this.args.pid,
+					uid: '1'
 				}
 				if(this.args.cid) {
 					param.cid = this.args.cid
+					param.content = this.comment
+				}else {
+					param.comment = this.comment
 				}
 
 				http({
 					data: param,
 					method: 'post'
 				}).then((res) => {
-					alert(res)
+					if(res.statusText == "OK") {
+						this.$f7.alert('回复成功', '')
+					}
 				})
 				
+			},
+			selectedMulti(base64Data) {
+				this.multis.push('url("' + base64Data + '")')
+			},
+			removeMulti(i) {
+				this.multis.splice(i, 1)
 			}
 		},
 		components: {

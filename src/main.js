@@ -8,6 +8,7 @@ import AppStyles from './css/app.less'
 // import Routes from './routes.js'
 // import store from './store/index'
 import jquery from 'jquery'
+import './plugins/brow/iconfont.js'
 
 import util from './util'
 

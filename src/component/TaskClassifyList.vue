@@ -1,12 +1,12 @@
 <script type="text/javascript">
-	import BaseList from './BaseList'
+	import Wrapper from './PullScrollWrapper'
 	import ListItem from './TaskClassifyItem'
 	import {gethttp} from '../common/http'
 
 	let http = gethttp()
 
 	export default {
-		extends: BaseList,
+		extends: Wrapper,
 		methods: {
 			getData() {
 				var data = {

@@ -1,12 +1,12 @@
 <script type="text/javascript">
-	import BaseList from './BaseList'
-	import ListItem from './NewItem'
+	import Wrapper from './PullScrollWrapper'
+	import ContentView from './NewsPage'
 	import {gethttp} from '../common/http'
 
 	let http = gethttp()
 
 	export default {
-		extends: BaseList,
+		extends: Wrapper,
 		methods: {
 			getData() {
 				var data = {
@@ -33,7 +33,7 @@
 			}
 		},
 		components: {
-			ListItem
+			ContentView
 		}
 	}
 </script>

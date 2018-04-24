@@ -5,7 +5,8 @@
 			<div class="pull-to-refresh-arrow"></div>
 		</div>
 		<div v-if="!showhint" class="list-block media-list" style="margin-top: 0;">
-			<list-item v-for="(item, index) in list" :data="item" :key="index"></list-item>
+			<!-- <list-item v-for="(item, index) in list" :data="item" :key="index"></list-item> -->
+			<content-view :list="list"></content-view>
 			<div v-if="list.length >= pageSize" class="infinite-scroll-preloader">
 				<div class="preloader"></div>
 			</div>
