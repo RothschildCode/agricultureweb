@@ -6,55 +6,54 @@
         <f7-pages>
 			<div data-page="news-content" class="page toobar-fixed news-content-page" :class="{'bg-fill': comments.length < 1}">
 				<div class="page-content">
-					<div v-if="data" class="bg-fill author-content-wrapper">
+					<div v-if="data" class="floor-list">
 						<h2 class="subject" v-html="data.subject"></h2>
-						<div class="card">
-							<div class="card-header">
-								<div class="list-block media-list">
-						            <div class="item-content">
-						                <div class="item-media">
-						                    <img class="news-cover" :src="data.cover">
-						                </div>
-						                <div class="item-inner">
-						                    <div class="item-title-row">
-						                        <div class="item-title" v-html="data.username"></div>
-						                        <div class="item-after" @click="openPopover($event)">
-						                        	<i class="f7-icons">more_fill</i>
-						                        </div>
-						                    </div>
-						                    <div class="item-subtitle" v-html="data.dateline"></div>
-						                </div>
-						            </div>								
+						<div class="floor master more">
+							<div class="infos clearfix">
+								<div class="avatar">
+									<img :src="data.cover">
 								</div>
-							</div>
-						</div>
-						<div class="content" v-html="data.message"></div>						
-					</div>
-
-					<div class="bg-fill comment-list-wrapper">
-						<div v-for="item in comments" class="comment-item">
-							<div class="card">
-								<div class="card-header">
-									<div class="list-block media-list">
-							            <div class="item-content">
-							                <div class="item-media">
-							                    <img class="news-cover" :src="item.cover">
-							                </div>
-							                <div class="item-inner">
-							                    <div class="item-title-row">
-							                        <div class="item-title" v-html="item.username"></div>
-							                        <div class="item-after" @click="openPopover($event, item.id)">
-							                        	<i class="f7-icons">more_fill</i>
-							                        </div>
-							                    </div>
-							                    <div class="item-subtitle" v-html="item.dateline"></div>
-							                </div>
-							            </div>
+								<div class="author-time">
+									<div class="author-icons">
+										<span class="author" v-html="data.username"></span>
+									</div>
+									<div class="time">
+										<span v-html="data.dateline"></span>
 									</div>
 								</div>
+								<div class="more-operation">
+									<a class="more-operation-btn" @click="openPopover($event)"></a>
+								</div>
 							</div>
-							<div class="content" v-html="item.comment"></div>						
+							<div class="item">
+								<span class="title" v-html="data.message"></span>
+							</div>
+						</div>	
+
+						<div class="floor-list">
+							<div v-for="item in comments" class="floor more">
+								<div class="infos clearfix">
+									<div class="avatar">
+										<img :src="item.cover">
+									</div>
+									<div class="author-time">
+										<div class="author-icons">
+											<span class="author" v-html="item.username"></span>
+										</div>
+										<div class="time">
+											<span v-html="item.dateline"></span>
+										</div>
+									</div>
+									<div class="more-operation">
+										<a class="more-operation-btn" @click="openPopover($event, item.id)"></a>
+									</div>									
+								</div>
+								<div class="item">
+									<span class="content" v-html="item.comment"></span>
+								</div>
+							</div>					
 						</div>
+
 					</div>
 				</div>
 			</div>

@@ -13,7 +13,7 @@ import {brows} from './browsMap'
     	var t  = text
     	for(var i = 0; i < brows.length; i++) {
     		var k = '（#' + brows[i].name + '）'
-    		var s = '<svg aria-hidden="true" class="icon"><use xlink:href="' + brows[i].link + '"></use></svg>'
+    		var s = '<svg aria-hidden="true" class="emoj"><use xlink:href="' + brows[i].link + '"></use></svg>'
     		t = t.replace(new RegExp(k,'g'), s)
     	}
     	return t

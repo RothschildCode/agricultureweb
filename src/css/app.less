@@ -1,12 +1,13 @@
 @import './font/iconfont.css';
 @import '../iconfont/editor_buttons_panel/iconfont.css';
+@import '../iconfont/task_icons/iconfont.css';
 
 @import './newscontent.less';
+@import './tools.less';
+@import './common.less';
 
 .swiper-slide {
   background: #fff;
-  // box-sizing: border-box;
-  // border: 1px solid #ccc;
   background-size: cover;
   background-repeat: no-repeat;
 }
@@ -366,3 +367,133 @@
     }
 }
 
+.floor {
+	margin-bottom: 6px;
+	padding: 17px;
+    background-color: #fff;
+    &.more {
+    	position: relative;
+    }
+   	.infos {
+   		.avatar {
+			float: left;
+		    width: 35px;
+		    height: 35px;
+		    border-radius: 50%;
+		    overflow: hidden;  			
+   		}
+	    .author-time {
+	    	height: 35px;
+		    margin-left: 8px;
+		    float: left;
+		    .author-icons {
+			    .author {
+					float: left;
+				    display: block;
+				    height: 17px;
+				    line-height: 17px;
+				    color: #333;
+				    font-size: 14px;
+				    margin-bottom: 6px;
+			    }		    	
+		    }
+		    .time {
+		    	float: left;
+			    display: block;
+			    color: #999;
+			    font-size: 12px;
+			    height: 12px;
+			    line-height: 12px;
+			    margin-left: 0;			    	
+		    }
+	    }    
+	    .more-operation {
+		    position: absolute;
+		    top: 17px;
+		    right: 17px;
+		    width: 100%;
+		    height: 0;
+	    }
+   	}
+   	.item {
+   		margin: 9px 0 0;
+   		display: block;
+   		.title {
+		    word-break: break-all;
+		    color: #000;
+		    font-size: 16px;
+		    line-height: 24px;
+		    margin-bottom: 4px;   
+
+		    span {
+			    display: -webkit-box;
+			    -webkit-box-orient: vertical;
+			    -webkit-line-clamp: 3;
+			    overflow: hidden;		    	
+		    }
+
+   		}
+   		.content {
+		    font-size: 16px;
+		    margin: 10px 0 4px;
+		    color: #333;
+		    line-height: 24px;
+		    word-break: break-word;
+		    padding-left: 43px;
+		    text-align: justify;   			
+   		}
+   		.medias-one-pic {
+			width: 100%;
+		    height: 0;
+		    padding-bottom: 56.25%;
+		    overflow: hidden;
+		}
+		.medias-img {
+			width: 100%;
+		}
+   	}
+}
+
+.floor-list {
+	.subject {
+		padding-top: 1em;
+		margin: 0;
+		background-color: #fff;
+	}
+	.floor {
+		margin-bottom: 1px;
+		&.master {
+			margin-bottom: 10px;
+		}
+		&:after {
+		    content: '';
+		    position: absolute;
+		    left: 0;
+		    bottom: -18px;
+		    width: 100%;
+		    height: 1px;
+		    background: #f0f0f0;
+		    transform: scaleY(0.5);			
+		}
+	}
+}
+
+.more-operation-btn {
+	position: absolute;
+    right: 0;
+    width: 18px;
+    height: 18px;
+    background-image: url(//tb2.bdstatic.com/tb/mobile/spb/widget/post_item_bxs/img/icon_card_more_n_1bb7e17.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    -webkit-tap-highlight-color: rgba(255,255,255,.3);	
+}
+
+.task-list {
+	.item-media {
+		i {
+			font-size: 2em;
+		}
+	}
+}
