@@ -86,10 +86,10 @@ function gethttp(c) {
 			var connected = status >= 200 && status < 300
 			if(conf.notification) {
 				if(!connected) {
-					bus.$f7.addNotification({
-						title: '网络错误',
-						subtitle: '网络请求失败,请检查您的网络'
-					})
+					// bus.$f7.addNotification({
+					// 	title: '网络错误',
+					// 	subtitle: '网络请求失败,请检查您的网络'
+					// })
 				}
 			}
 			return connected

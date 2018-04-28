@@ -34,7 +34,7 @@ files.forEach(function(f) {
     var devPlug =  new HtmlWebpackPlugin({
         // filename: path.resolve(__dirname, '../public/dist/'+ name +'.html'),
         filename: name + '.html',
-        hash: true,
+        // hash: true,
         chunks: ['vendor', name],
         // chunksSortMode: function(c1, c2) {
         //  var o = ['vendor', 'components', name]
@@ -51,7 +51,7 @@ files.forEach(function(f) {
     var prodPlugin = new HtmlWebpackPlugin({
         // filename: path.resolve(__dirname, '../public/dist/'+ name +'.html'),
         filename: name + '.html',
-        hash: true,
+        // hash: true,
         chunks: ['vendor', 'manifest', name],
         // chunksSortMode: function(c1, c2) {
         //  var o = ['vendor', 'components', name]
