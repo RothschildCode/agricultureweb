@@ -6,7 +6,6 @@
         <f7-pages>
 			<div data-page="task" class="page task-page">
 				<div class="page-content">
-					<h3 class="task-title" v-html="args.taskTitle"></h3>
 					<div class="list-block accordion-list">
 					  <ul>
 					    <li v-for="(item, index) in list" class="accordion-item" :class="{selected: item.selected, 'accordion-item-expanded': item.selected}">

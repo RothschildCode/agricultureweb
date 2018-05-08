@@ -5,6 +5,8 @@ import {bus} from './bus'
 
 var base_url = '/api/university/Interface.php'
 
+// var base_url = '../api.action'
+
 var http = axios.create({
 	url: base_url,
 	timeout: 10000,
@@ -27,7 +29,7 @@ var http = axios.create({
 	},
 	proxy: {
 		host: '127.0.0.1',
-		port: 8081
+		port: 9000
 	}
 })
 
@@ -55,7 +57,7 @@ var http_indicator = axios.create({
 	},
 	proxy: {
 		host: '127.0.0.1',
-		port: 8081
+		port: 9000
 	}
 })
 
@@ -96,7 +98,7 @@ function gethttp(c) {
 		},
 		proxy: {
 			host: '127.0.0.1',
-			port: 8081
+			port: 9000
 		}
 	})
 }

@@ -113,7 +113,7 @@
 					method: 'post'
 				}).then((res) => {
 					var d = res.data
-					d.cover = 'http://peining.tunnel.echomod.cn/university/images/img_14347674602997.jpg'
+					d.cover = 'http://39.107.99.122/university/images/img_14347674602997.jpg'
 					_this.data = d
 				}).catch((err) => {
 
@@ -130,7 +130,7 @@
 				}).then((res) => {
 					var list = res.data
 					for(var i = 0; i < list.length; i++) {
-						list[i].cover = 'http://peining.tunnel.echomod.cn/university/images/img_14347674602997.jpg'
+						list[i].cover = 'http://39.107.99.122/university/images/img_14347674602997.jpg'
 						list[i].comment = $.parseRichText(list[i].comment)
 					}
 					_this.comments = res.data

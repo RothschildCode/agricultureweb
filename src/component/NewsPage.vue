@@ -23,7 +23,7 @@
 			</div>
 			<div class="item">
 				<div class="title">
-					<span v-html="item.message"></span>
+					<span style="-webkit-box-orient: vertical;" v-html="item.message"></span>
 				</div>
 			</div>
 		</div>	
