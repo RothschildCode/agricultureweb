@@ -59,7 +59,7 @@
 					data,
 					method: 'post'
 				}).then((res) => {
-					_this.list = res.data
+					_this.list = res.data.data
 				}).catch((err) => {
 					alert(err)
 				})

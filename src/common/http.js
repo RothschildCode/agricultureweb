@@ -3,9 +3,10 @@ import axios from 'axios'
 
 import {bus} from './bus'
 
-var base_url = '/api/university/Interface.php'
+// var base_url = '/api/university/Interface.php'
+// var base_url = '/local/university/Interface.php'
 
-// var base_url = '../api.action'
+var base_url = '../api.action' //prod
 
 var http = axios.create({
 	url: base_url,
@@ -14,7 +15,7 @@ var http = axios.create({
 		return querystring.stringify(data)
 	}],
 	transformResponse: [function (data) {
-		return JSON.parse(data).data
+		return JSON.parse(data)
 	}],
 	headers: {'Content-Type': 'application/x-www-form-urlencoded'},
 	validateStatus: function(status) {
@@ -26,10 +27,6 @@ var http = axios.create({
 			})
 		}
 		return connected
-	},
-	proxy: {
-		host: '127.0.0.1',
-		port: 9000
 	}
 })
 
@@ -41,7 +38,7 @@ var http_indicator = axios.create({
 		return querystring.stringify(data)
 	}],
 	transformResponse: [function (data) {
-		return JSON.parse(data).data
+		return JSON.parse(data)
 	}],
 	headers: {'Content-Type': 'application/x-www-form-urlencoded'},
 	validateStatus: function(status) {
@@ -54,10 +51,6 @@ var http_indicator = axios.create({
 			})
 		}
 		return connected
-	},
-	proxy: {
-		host: '127.0.0.1',
-		port: 9000
 	}
 })
 
@@ -75,10 +68,12 @@ function gethttp(c) {
 			if(conf.indicator) {
 				bus.$f7.showIndicator()
 			}
-			return querystring.stringify(data)
+			var s = querystring.stringify(data)
+			console.log(s)
+			return s
 		}],
 		transformResponse: [function (data) {
-			return JSON.parse(data).data
+			return JSON.parse(data)
 		}],
 		headers: {'Content-Type': 'application/x-www-form-urlencoded'},
 		validateStatus: function(status) {
@@ -95,16 +90,26 @@ function gethttp(c) {
 				}
 			}
 			return connected
-		},
-		proxy: {
-			host: '127.0.0.1',
-			port: 9000
 		}
+	})
+}
+
+var fileUrl = '/file/'
+
+function getFileHttp(c) {
+	return axios.create({
+		url: fileUrl,
+		timeout: 10000,
+		transformResponse: [function (data) {
+			return JSON.parse(data).RETURN
+		}],
+		// headers: {'Content-Type': 'application/json'}
 	})
 }
 
 export {
 	http_indicator, 
 	http,
-	gethttp
+	gethttp,
+	getFileHttp
 }

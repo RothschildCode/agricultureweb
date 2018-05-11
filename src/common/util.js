@@ -48,3 +48,36 @@ import {bus} from './bus'
 	}
 
 })(jQuery);
+
+
+(function(app) {
+	app = {
+		get: (k) => {
+			var jdata = localStorage.getItem(k)
+			if(!jdata) {
+				return null
+			}
+			var odata = JSON.parse(jdata)
+			if(odata.needParse) {
+				return JSON.parse(odata.data)
+			}
+			return odata.data
+
+		},
+		set: (k, v) => {
+			var data = {
+				needParse: false
+			}
+			if(v instanceof String) {
+				data.data = v
+			}else {
+				data.needParse = true
+				data.data = JSON.stringify(v)
+			}
+			localStorage.setItem(k, JSON.stringify(data))
+		}
+	}
+
+	window.app = app
+
+})({})

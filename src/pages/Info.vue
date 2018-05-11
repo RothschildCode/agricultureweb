@@ -15,39 +15,32 @@
 						<div class="pull-to-refresh-arrow"></div>
 					</div>
 					<!-- data list render begin -->
-					<div v-for="item in list" class="floor">
-						<div class="floor-wrap" @click="newsClick(item)">
-							<div class="infos clearfix">
-								<div class="avatar">
-									<img :src="item.cover">
-								</div>
-								<div class="author-time">
-									<div class="author-icons clearfix">
-										<span class="author" v-html="item.authorname"></span>
+					<div v-for="item in list" class="info-item" @click="newsClick(item)">
+						<div class="info-wrap" :class="{horizontal:item.img && item.img.length < 3, vertical: item.img && item.img.length >= 3}">
+							<div class="info-inner">
+								<div class="info-link">
+									<div>
+										<div v-if="item.img && item.img.length < 3 && item.img.length > 0" class="info-images">
+											<div class="image-inner">
+												<img :src="item.img[0]">
+											</div>
+										</div>
+										<div class="info-title">
+											<div class="title-inner" v-html="item.subject"></div>
+										</div>
+										<div v-if="item.img && item.img.length >= 3" class="info-images">
+											<div v-for="image in item.img" class="image-item">
+												<div class="image-item-inner">
+													<img :src="image">
+												</div>
+											</div>
+										</div>									
+										<div class="info-other">
+											<span v-html="item.cname">双子娱类</span>
+											<span>{{item.comment_num}}评</span>
+										</div>
 									</div>
-									<span class="time" v-html="item.dateline"></span>
 								</div>
-							</div>
-							<div class="item">
-								<div class="title">
-									<span style="-webkit-box-orient: vertical;" v-html="item.message"></span>
-								</div>
-							</div>
-
-							<media-wrap :medias="item.img"></media-wrap>
-
-						</div>
-						<div class="row no-gutter card-footer">
-							<div class="col-33 align-center">
-								<span>{{item.cname}}</span>
-							</div>
-							<div class="col-33 align-center left-line right-line" @click="goReply(item)">
-								<i class="f7-icons media">chat</i>
-								{{item.comment_num}}
-							</div>
-							<div class="col-33 align-center">
-								<i class="f7-icons media">heart</i>
-								{{item.praise_num}}
 							</div>
 						</div>
 					</div>
@@ -67,7 +60,6 @@
 
 <script>
 	import Subnavbar from '../component/Subnavbar'
-	import MediaWrap from '../component/MediaWrap'
 	import {eventbus, EVENTS} from '../js/bus'
 	import {http} from '../common/http'
 
@@ -79,9 +71,8 @@
 				currentSubnav: {},
 				pageIndex: 1,
 				pageSize: 15,
-				pageId: 1,
+				pageId: 2,
 				cid: null,
-				mediaSize: document.body.clientWidth * 0.32,
 				f7CompInit: false,
 				loading: false
 			}
@@ -123,7 +114,7 @@
 			getSubnavbars() {
 
 				if(this.cid && this.cid != '') {
-					this.subnavbarItems = app.get('subnavbar_news')
+					this.subnavbarItems = app.get('subnavbar_info')
 					return
 				}
 
@@ -137,13 +128,13 @@
 					method: 'post'
 				}).then((res) => {
 					var list = res.data.data
-					app.set('subnavbar_news', list)
+					app.set('subnavbar_info', list)
 					_this.subnavbarItems = list
 					_this.refresh()
 				})
 			},
 			subnavItemClick(data) {
-				var url = 'news.html'
+				var url = 'info.html'
 				if(data) {
 					url += '?cid=' + data.cid
 				}
@@ -205,8 +196,7 @@
 			}			
 		},
 		components: {
-			Subnavbar,
-			MediaWrap
+			Subnavbar
 		}
 	}
 </script>

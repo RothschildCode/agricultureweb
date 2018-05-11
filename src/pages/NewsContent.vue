@@ -9,49 +9,34 @@
 					<div v-if="data" class="floor-list">
 						<h2 class="subject" v-html="data.subject"></h2>
 						<div class="floor master more">
-							<div class="infos clearfix">
-								<div class="avatar">
-									<img :src="data.cover">
-								</div>
-								<div class="author-time">
-									<div class="author-icons">
-										<span class="author" v-html="data.username"></span>
+							<div class="floor-wrap">
+								<div class="infos clearfix">
+									<div class="avatar">
+										<img :src="data.cover">
 									</div>
-									<div class="time">
-										<span v-html="data.dateline"></span>
+									<div class="author-time">
+										<div class="author-icons">
+											<span class="author" v-html="data.username"></span>
+										</div>
+										<div class="time">
+											<span v-html="data.dateline"></span>
+										</div>
+									</div>
+									<div class="more-operation">
+										<a class="more-operation-btn" @click="openPopover($event)"></a>
 									</div>
 								</div>
-								<div class="more-operation">
-									<a class="more-operation-btn" @click="openPopover($event)"></a>
+								<div class="item">
+									<span class="title" v-html="data.message"></span>
 								</div>
-							</div>
-							<div class="item">
-								<span class="title" v-html="data.message"></span>
+
+								<media-wrap :medias="data.img" :block="true"></media-wrap>
+
 							</div>
 						</div>	
 
 						<div class="floor-list">
-							<div v-for="item in comments" class="floor more">
-								<div class="infos clearfix">
-									<div class="avatar">
-										<img :src="item.cover">
-									</div>
-									<div class="author-time">
-										<div class="author-icons">
-											<span class="author" v-html="item.username"></span>
-										</div>
-										<div class="time">
-											<span v-html="item.dateline"></span>
-										</div>
-									</div>
-									<div class="more-operation">
-										<a class="more-operation-btn" @click="openPopover($event, item.id)"></a>
-									</div>									
-								</div>
-								<div class="item">
-									<span class="content" v-html="item.comment"></span>
-								</div>
-							</div>					
+							<comment v-for="(item, $index) in comments" :data="item" :key="$index"></comment>				
 						</div>
 
 					</div>
@@ -78,7 +63,10 @@
 </template>
 
 <script>
+	import MediaWrap from '../component/MediaWrap'
+	import Comment from '../component/Comment'
 	import {gethttp} from '../common/http'
+	import {eventbus, EVENTS} from '../js/bus'
 
 	let http = gethttp({
 		indicator: true
@@ -94,6 +82,10 @@
 			}
 		},
 		created() {
+			var _this = this
+			eventbus.$on(EVENTS.MORE_OPERATION_TAP, function(c){
+				_this.openPopover(c.e, c.data.id)
+			})
 			this.pid = $.getUrlParam('pid')
 			this.getContent()
 			this.getComments()
@@ -112,7 +104,7 @@
 					},
 					method: 'post'
 				}).then((res) => {
-					var d = res.data
+					var d = res.data.data
 					d.cover = 'http://39.107.99.122/university/images/img_14347674602997.jpg'
 					_this.data = d
 				}).catch((err) => {
@@ -128,12 +120,12 @@
 					},
 					method: 'post'
 				}).then((res) => {
-					var list = res.data
+					var list = res.data.data
 					for(var i = 0; i < list.length; i++) {
 						list[i].cover = 'http://39.107.99.122/university/images/img_14347674602997.jpg'
 						list[i].comment = $.parseRichText(list[i].comment)
 					}
-					_this.comments = res.data
+					_this.comments = list
 				}).catch((err) => {
 
 				})
@@ -161,12 +153,16 @@
 				this.$f7.actions(buttons);		
 			},
 			goReply() {
-				var url = 'reply.html?webview_transition&pid=' + this.pid
+				var url = 'reply.html?webview_transition&type=2&pid=' + this.pid
 				if(this.cid) {
 					url = url + '&cid=' + this.cid
 				}
 				window.location.href = url
 			}
+		},
+		components: {
+			MediaWrap,
+			Comment
 		}
 	}
 </script>
