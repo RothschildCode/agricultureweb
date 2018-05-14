@@ -94,12 +94,18 @@ function gethttp(c) {
 	})
 }
 
-var fileUrl = '/file/'
+// var fileUrl = '/file/'
+var fileUrl = '../file.action' // prod
+var target = 'http://39.107.99.122:9999'
 
 function getFileHttp(c) {
 	return axios.create({
 		url: fileUrl,
 		timeout: 10000,
+		transformRequest: [function (data) { 
+			data.target = target
+			return querystring.stringify(data)
+		}],
 		transformResponse: [function (data) {
 			return JSON.parse(data).RETURN
 		}],
