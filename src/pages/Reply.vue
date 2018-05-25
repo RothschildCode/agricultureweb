@@ -12,33 +12,37 @@
 			  			<input v-if="type==1" v-model="subject" type="text" class="editor_input" name="" placeholder="标题">
 			  		</div>
 			  		<textarea v-model="comment" rows="8" class="editor_input editor_content" :placeholder="type==1?'我来说两句':type==2?'发表您的回复':''"></textarea>
-					  <a v-if="type==1" class="chip topic-chip open-popup" data-popup=".popup-topic">
-					    <div class="chip-label">#{{selTopic.cname||'未选择话题'}}#</div>
-					  .</a>
 			  	</div>
-			  	<div class="media-bar">
-			  		<div class="btn-item" @click="changePanel(1)">
-			  			<i v-if="showCode != 1" class="icon iconfont icon-emoji"></i>
-			  			<i v-if="showCode == 1" class="icon iconfont active icon-emojifill"></i>
-			  		</div>
-			  		<div v-if="cid==null" class="btn-item" @click="changePanel(2)">
-			  			<i v-if="showCode != 2" class="icon iconfont icon-xiangji"></i>
-			  			<i v-if="showCode == 2" class="icon iconfont active icon-camerafill"></i>
-			  			<input type="file" name="" class="upload-input" ref="uploadInput1" @change="uploadChange">
-			  		</div>
-			  		<div v-if="cid==null" class="btn-item" @click="changePanel(2)">
-			  			<i v-if="showCode != 2" class="icon iconfont icon-pic"></i>
-			  			<i v-if="showCode == 2" class="icon iconfont active icon-picfill"></i>
-			  			<input type="file" name="" class="upload-input" ref="uploadInput1" @change="uploadChange">
-			  		</div>
-			  		<div v-if="type==1" class="btn-item">
-			  			<a href="#" class="icon iconfont open-popup btn-topic" data-popup=".popup-topic">#</a>
-			  		</div>
 
-			  		<div class="btn-item send">
-			  			<span @click="submit()">{{type==1?'发布':type==2?'回复':''}}</span>
-			  		</div>
+			  	<div class="reply-bottom-panel">
+					<a v-if="type==1" class="chip topic-chip open-popup" data-popup=".popup-topic">
+						<div class="chip-label">#{{selTopic.cname||'未选择话题'}}#</div>
+					</a>			  	
 
+				  	<div class="media-bar">
+				  		<div class="btn-item" @click="changePanel(1)">
+				  			<i v-if="showCode != 1" class="icon iconfont icon-emoji"></i>
+				  			<i v-if="showCode == 1" class="icon iconfont active icon-emojifill"></i>
+				  		</div>
+				  		<div v-if="type==1" class="btn-item" @click="changePanel(2)">
+				  			<i v-if="showCode != 2" class="icon iconfont icon-xiangji"></i>
+				  			<i v-if="showCode == 2" class="icon iconfont active icon-camerafill"></i>
+				  			<input type="file" name="" class="upload-input" ref="uploadInput1" @change="uploadChange">
+				  		</div>
+				  		<div v-if="type==1" class="btn-item" @click="changePanel(2)">
+				  			<i v-if="showCode != 2" class="icon iconfont icon-pic"></i>
+				  			<i v-if="showCode == 2" class="icon iconfont active icon-picfill"></i>
+				  			<input type="file" name="" class="upload-input" ref="uploadInput1" @change="uploadChange">
+				  		</div>
+				  		<div v-if="type==1" class="btn-item">
+				  			<a href="#" class="icon iconfont open-popup btn-topic" data-popup=".popup-topic">#</a>
+				  		</div>
+
+				  		<div class="btn-item send">
+				  			<span @click="submit()">{{type==1?'发布':type==2?'回复':''}}</span>
+				  		</div>
+
+				  	</div>			  		
 			  	</div>
 
 			  	<brow-panel v-if="showCode == 1"></brow-panel>
@@ -205,6 +209,24 @@
 				}
 			},			
 			publish() {
+				if(this.subject == '') {
+					this.$f7.modal({
+						title: '写一个标题吧:(',
+						buttons: [{
+							text: '嗯，好的'
+						}]
+					})
+					return
+				}
+				if(this.comment == '') {
+					this.$f7.modal({
+						title: '没有发表任何内容哦，写点东西吧:(',
+						buttons: [{
+							text: '嗯，好的'
+						}]
+					})
+					return
+				}
 				if(!this.selTopic.cid) {
 					this.$f7.modal({
 						title: '选择一个话题吧:(',
@@ -223,7 +245,6 @@
 					var param = {
 						api: 'publish_post',
 						cid: _this.selTopic.cid,
-						uid: 1,
 						fid: 2,
 						subject: _this.subject,
 						message: _this.comment,
@@ -281,7 +302,7 @@
 						method: 'post'
 					}).then((res) => {
 						var msg = ''
-						if(res.statusText == "OK") {
+						if(res.data.s == 0) {
 							msg = '回复成功:)'
 						}else {
 							msg = '糟糕，回复失败了:('

@@ -3,15 +3,21 @@ import axios from 'axios'
 
 import {bus} from './bus'
 
-// var base_url = '/api/university/Interface.php'
-// var base_url = '/local/university/Interface.php'
+window.thirdtools = {
+	getUid: function() {
+		return 1
+	}
+}
 
-var base_url = '../api.action' //prod
+var base_url = '/api/university/Interface.php'
+// var base_url = '/local/university/Interface.php'
+// var base_url = '../api.action' //prod
 
 var http = axios.create({
 	url: base_url,
 	timeout: 10000,
 	transformRequest: [function (data) { 
+		data.uid = window.thirdtools.getUid()
 		return querystring.stringify(data)
 	}],
 	transformResponse: [function (data) {
@@ -35,6 +41,7 @@ var http_indicator = axios.create({
 	timeout: 10000,
 	transformRequest: [function (data) {  
 		bus.$f7.showIndicator()
+		data.uid = window.thirdtools.getUid()
 		return querystring.stringify(data)
 	}],
 	transformResponse: [function (data) {
@@ -68,9 +75,8 @@ function gethttp(c) {
 			if(conf.indicator) {
 				bus.$f7.showIndicator()
 			}
-			var s = querystring.stringify(data)
-			console.log(s)
-			return s
+			data.uid = window.thirdtools.getUid()
+			return querystring.stringify(data)
 		}],
 		transformResponse: [function (data) {
 			return JSON.parse(data)
@@ -96,7 +102,7 @@ function gethttp(c) {
 
 // var fileUrl = '/file/'
 var fileUrl = '../file.action' // prod
-var target = 'http://39.107.99.122:9999'
+var target = 'http://127.0.0.1:9999'
 
 function getFileHttp(c) {
 	return axios.create({

@@ -1,7 +1,7 @@
 <template>
 	<div class="medias-wrap" :class="{'medias-block-wrap': block}">
-		<img v-if="block" v-for="image in medias" :src="image" v-on:click.stop="preview">
-		<div v-if="!block" v-for="sty in mediasData" :style="sty" class="medias-item" :class="{'medias-one-pic': mediasData.length==1, 'medias-multi-pic': mediasData>1}" v-on:click.stop="preview"></div>
+		<img v-if="block" v-for="(image, $index) in medias" :src="image" v-on:click.stop="preview($index)">
+		<div v-if="!block && $index < 3" v-for="(sty, $index) in mediasData" :style="sty" class="medias-item" :class="{'medias-one-pic': mediasData.length==1, 'medias-multi-pic': mediasData.length>1}" v-on:click.stop="preview($index)"></div>
 	</div>
 </template>
 
@@ -10,7 +10,7 @@
 		props: ['medias', 'block'],
 		data() {
 			return {
-				size: document.body.clientWidth * 0.32,
+				size: (document.body.clientWidth - 17 * 2) * 0.32,
 				mediasData: []
 			}
 		},
@@ -29,17 +29,19 @@
 					}else {
 						mediasData.push({
 							width: w,
-							height: h,
+							height: h, 
 							backgroundImage: bg
 						})
 					}
 				}
 				this.mediasData = mediasData
 			},
-			preview() {
+			preview(index) {
 				var myPhotoBrowserStandalone = this.$f7.photoBrowser({
 				    photos : this.medias,
-				    theme: 'dark'
+				    initialSlide: index,
+				    theme: 'dark',
+				    backLinkText: '关闭'
 				})
 				myPhotoBrowserStandalone.open()
 			}

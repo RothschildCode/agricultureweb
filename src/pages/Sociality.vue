@@ -3,9 +3,9 @@
   <div id="app">
     <f7-views>
       <f7-view id="main-view" main>
-		<subnavbar :list="subnavbarItems" :activeIndex="tabIndex" :more="false"></subnavbar>
+		<subnavbar v-if="!channel" :list="subnavbarItems" :activeIndex="tabIndex" :more="true"></subnavbar>
         <f7-pages>
-			<div data-page="news" class="page news-page navbar-through">		
+			<div data-page="news" class="page news-page" :class="{'navbar-through': !channel}">		
 				<a href="#" class="floating-button color-pink" @click="goPublish">
 					<i class="f7-icons">add</i>
 				</a>
@@ -13,12 +13,11 @@
 					<div class="swiper-container" ref="swiper">
 						<div class="swiper-wrapper">
 							<div v-for="(item, $index) in subnavbarItems" class="swiper-slide">
-								<news-container :uniqueKey="$index" :condition="item" :initload="$index == tabIndex"></news-container>
+								<sociality-container :uniqueKey="$index" :condition="item" :channel="channel" :initload="$index == tabIndex"></sociality-container>
 							</div>
 						</div>
 					</div>
 				</div>
-
 			</div>
         </f7-pages>
       </f7-view>
@@ -27,7 +26,7 @@
 </template>
 
 <script>
-	import NewsContainer from '../component/NewsContainer'
+	import SocialityContainer from '../component/SocialityContainer'
 	import Subnavbar from '../component/Subnavbar'
 	import MediaWrap from '../component/MediaWrap'
 	import {eventbus, EVENTS} from '../js/bus'
@@ -39,19 +38,39 @@
 		data() {
 			return {
 				subnavbarItems: [],
-				swiper: null,
+				pageId: 1,
 				tabIndex: 0,
-				pageId: 2
+				swiper: null,
+				channel: null
 			}
 		},
 		created() {
+			var channel = $.getUrlParam('channel')
+			if(channel) {
+				this.channel = app.get('channels')[channel]
+				this.subnavbarItems = [this.channel]
+				return
+			}
+			var tabs = [
+				{
+					cname: '全部'
+				},
+				{
+					cname: '推荐',
+					recommend: true
+				},
+				{
+					cname: '精华帖',
+					marrow: true
+				}
+			]
+			this.subnavbarItems = tabs
 			eventbus.$on(EVENTS.SUBNAV_ITEM_TAP, this.tabChange)
-			this.getSubnavbars()
 		},
-		updated() {
-			if(this.swiper == null) {
+		mounted() {
+			if(this.swiper == null && this.channel == null) {
 				var self = this
-				var swiper = $(this.$refs.swiper)
+				var swiper = $(this.$refs.swiper)					
 				this.swiper = new Swiper('.swiper-container', {
 					on: {
 						slideChangeTransitionEnd: function() {
@@ -62,11 +81,14 @@
 			}
 		},
 		methods: {
-			tabChange(index) {
-				this.tabIndex = index
-				this.swiper.slideTo(index, 0)
-			},			
+			goPublish() {
+				window.location.href = 'reply.html?webview_transition&type=1&pageid=' + this.pageId
+			},
 			getSubnavbars() {
+				if(this.cid && this.cid != '') {
+					this.subnavbarItems = app.get('subnavbar_news')
+					return
+				}
 				var _this = this
 				var data = {
 					api: 'page_type',
@@ -77,15 +99,22 @@
 					method: 'post'
 				}).then((res) => {
 					var list = res.data.data
+					app.set('subnavbar_news', list)
 					_this.subnavbarItems = list
+					_this.refresh()
 				})
 			},
-			goPublish() {
-				window.location.href = 'reply.html?webview_transition&type=1&pageid=' + this.pageId
-			},			
+			tabChange(index) {
+				if(index == -1) {
+					window.location.href = 'channels.html?webview_transition'
+					return
+				}
+				this.tabIndex = index
+				this.swiper.slideTo(index, 0)
+			}
 		},
 		components: {
-			NewsContainer,
+			SocialityContainer,
 			Subnavbar,
 			MediaWrap
 		}

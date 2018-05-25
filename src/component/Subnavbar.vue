@@ -3,8 +3,11 @@
 	  <div class="navbar-inner h-auto">
 	    <div class="subnavbar" ref="wrap">
 	      <div class="buttons-row">
-	      <a href="#" class="button tab-link" :class="{active: !cid}" @click="navClick(null, -1)" ref="tabActive">推荐</a>
-	      <a v-for="item in list" href="#" class="button tab-link" :class="{active: item.cid==cid}" v-html="item.cname" @click="navClick(item)" :ref="item.cid==cid?'tabActive':'tab'"></a>
+	      <a href="#" class="button tab-link" :class="{active: activeIndex == 0}" @click="navClick(0)">全部</a>
+	      <a v-if="$index!=0" v-for="(item, $index) in list" href="#" class="button tab-link" :class="{active: $index == activeIndex}" v-html="item.cname" @click="navClick($index)"></a>
+	      <a v-if="more" class="button tab-link more" @click="navClick(-1)">
+	      	<i class="f7-icons">more</i>
+	      </a>
 	      </div>
 	    </div>
 	  </div>
@@ -14,19 +17,10 @@
 <script type="text/javascript">
 	import {eventbus, EVENTS} from '../js/bus'
 	export default {
-		props: ['list', 'cid'],
-		mounted() {
-			var cw = document.body.clientWidth
-			var $activeTab = $(this.$refs.tabActive)
-			var left = $activeTab.offset().left
-			var $wrap = $(this.$refs.wrap)
-			var sl = left - ((cw - $activeTab.width() - 16) / 2)
-			console.log(sl)
-			$wrap.scrollLeft(sl)
-		},
+		props: ['list', 'activeIndex', 'more'],
 		methods: {
-			navClick(data) {
-				eventbus.$emit(EVENTS.SUBNAV_ITEM_TAP, data)
+			navClick(index) {
+				eventbus.$emit(EVENTS.SUBNAV_ITEM_TAP, index)
 			}
 		}
 	}

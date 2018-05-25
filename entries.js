@@ -4,6 +4,8 @@ module.exports = {
 		'vuex',
 		'jquery',
 		'framework7',
-		'framework7-vue'
+		'framework7-vue',
+		'swiper',
+		'mescroll'
 	]
 }

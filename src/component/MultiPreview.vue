@@ -2,9 +2,14 @@
   	<div class="multi-preview">
   		<canvas ref="cvs" style="display: none;"></canvas>
   		<div class="multi-content" :style="{width: (95 * (multis.length + 1)) + 10 + 'px'}">
-	  		<div v-for="(item, index) in multis" class="item">
+
+	  		<div v-if="readonly" v-for="item in urls" class="item">
+	  			<span class="item-span" :style="{backgroundImage: 'url('+item+')'}"></span>
+	  		</div>
+
+	  		<div v-if="!readonly" v-for="(item, index) in multis" class="item">
 	  			<span class="item-span" :style="{'background-image': item}"></span>
-	  			<a v-if="!readonly" class="item-close" @click="removeMulti(index)">
+	  			<a class="item-close" @click="removeMulti(index)">
 	  				<span class="btn-close"></span>
 	  			</a>
 	  		</div>

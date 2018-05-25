@@ -27,6 +27,11 @@ var webpackConfig = merge(baseWebpackConfig, {
     filename: utils.assetsPath('js/[name].js'),
     chunkFilename: utils.assetsPath('js/[id].js')
   },
+  resolve: {
+    alias: {
+      'swiper': 'swiper/dist/js/swiper.js'
+    }
+  },
   plugins: entriesLoader.prodPlugins.concat([
     // http://vuejs.github.io/vue-loader/en/workflow/production.html
     new webpack.DefinePlugin({

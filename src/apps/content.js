@@ -1,4 +1,4 @@
 import * as App from '../main.js'
-import Entry from '../pages/NewsContent'
+import Entry from '../pages/Content'
 
 App.initEntry(Entry)

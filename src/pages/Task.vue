@@ -3,20 +3,11 @@
   <div id="app">
     <f7-views>
       <f7-view id="main-view" main>
-<!--       	<div class="navbar">
-      		<div class="navbar-inner h-auto">
-      			<div class="subnavbar">
-      				<div class="buttons-row">
-      					<a class="button tab-link" @click="done">完成</a>
-      				</div>
-      			</div>
-      		</div>
-      	</div> -->
         <f7-pages>
 			<div data-page="task" class="page task-page">
 				<a href="#" class="floating-button color-pink" @click="done">
 					<i class="f7-icons">cloud_upload</i>
-				</a>			
+				</a>
 				<div class="page-content">
 					<div class="list-block accordion-list">
 					  <ul>
@@ -34,9 +25,9 @@
 									<ul v-if="item.content_type == 1">
 										<li v-for="opt in item.opts">
 											<label class="label-radio item-content">
-												<input type="radio" name="my-radio" :value="opt.value" checked="checked">
-												<div class="item-inner task-opt" @click="radioClick(item, opt.value)">
-										        	<div class="item-title" v-html="opt.text"></div>
+												<input type="radio" name="my-radio" v-bind:checked="dataMap[$index].result_value==opt" v-bind:disabled="dataMap[$index].filled">
+												<div class="item-inner task-opt" :class="{disabled:dataMap[$index].filled}" @click="radioClick($index, opt)">
+										        	<div class="item-title" v-html="opt"></div>
 										        </div>
 											</label>
 										</li>
@@ -47,7 +38,7 @@
 												<div class="item-inner">
 													<!-- <div class="item-title label" v-html="item.content_title"></div> -->
 													<div class="item-input item-input-field">
-														<textarea v-model="dataMap[$index].result_value" v-bind:readonly="dataMap[$index].filled" placeholder="点击填写" @change="fill(item, $index, $event)"></textarea>
+														<textarea v-model="dataMap[$index].result_value" v-bind:disabled="dataMap[$index].filled" placeholder="点击填写" @change="fill(item, $index, $event)"></textarea>
 													</div>
 												</div>
 											</div>
@@ -87,22 +78,16 @@
 			}
 		},
 		created() {
-			this.getArgs()
+			this.taskId = $.getUrlParam('taskId')
+			this.getContent()
 		},
 		methods: {
-			getArgs() {
-				var task = $.getData('taskclassify')
-				this.args = {
-					taskId: task.check_up_id,
-					taskTitle: task.check_up_name
-				}
-				this.getContent()
-			},
 			taskToggle(task) {
 				task.opened = !task.opened
 			},
-			radioClick(item, value) {
-				this.dataMap[item.content_id].result_value = value
+			radioClick(index, value) {
+				if(this.dataMap[index].filled) return
+				this.dataMap[index].result_value = value
 			},
 			fill(item, index, arg) {
 				if(item.content_type == 1) {
@@ -122,14 +107,16 @@
 				http({
 					data: {
 						api: 'site_content',
-						check_up_id: this.args.taskId,
-						uid: '1'
+						check_up_id: this.taskId
 					},
 					method: 'post'
 				}).then((res) => {
 					var list = res.data.data
 					var dataMap = new Array()
 					for(var i = 0; i < list.length; i++) {
+						if(list[i].content_type == 1) {
+							list[i].opts = list[i].content_value.split('/')
+						}
 						dataMap.push({
 							content_id: list[i].content_id,
 							user_id: 1,
@@ -156,9 +143,8 @@
 						onClick: function() {
 							var uploader = new EnclosureUploader()
 							var doneCount = 0
-							for(var i = 0; i < this.dataMap.length; i++) {
+							for(var i = 0; i < _this.dataMap.length; i++) {
 								(function(dataItem, len) {
-									if(dataItem.photo_list.length < 1) return
 									uploader.upload(dataItem.photo_list, (urlsText) => {
 										dataItem.result_photos = urlsText	
 										doneCount += 1
@@ -166,15 +152,7 @@
 											_this.post()
 										} 
 									})
-								})(this.dataMap[i], (function() {
-									var c = 0
-									for(var i = 0; i < _this.dataMap.length; i++) {
-										if(_this.dataMap[i].photo_list.length > 0) {
-											c++
-										}
-									}
-									return c
-								})())
+								})(_this.dataMap[i], _this.dataMap.length)
 							}
 						}
 					}, {

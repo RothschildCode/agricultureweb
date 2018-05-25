@@ -1,9 +1,29 @@
 .medias-block-wrap {
-	display: flex;
-	flex-direction: column;
+	display: block !important;
+	/*flex-direction: column;*/
 	img {
+		display: block;
 		margin: 1em 0;
+		/*width: 100%;*/
+		/*height: 100%;*/
+	}
+}
+.medias-wrap{
+	display: flex;
+	.medias-item {
+		background-position: center;
+		background-size: cover;
+	}
+	.medias-multi-pic {
+		width: 32vm;
+		height: 32vm;
+	    margin-right: 2%;
+	    line-height: 0;
+	}
+	.medias-one-pic {
 		width: 100%;
-		height: 100%;
+	    height: 0;
+	    padding-bottom: 56.25%;
+	    overflow: hidden;
 	}
 }
