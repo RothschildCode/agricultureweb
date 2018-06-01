@@ -7,9 +7,6 @@
 		props: ['condition'],
 		data() {
 			return {
-				displayNumber: 15,
-				pageSize: 15,
-				pageIndex: 1,
 				pageId: 2,
 				loaded: false
 			}
@@ -24,7 +21,7 @@
 				var param = {
 					api: 'college_post_list',
 					displayNumber: this.pageSize,
-					pageIndex: page,
+					pageIndex: page.num,
 					fid: 2,
 					pageid: this.pageId
 				}
@@ -42,7 +39,7 @@
 						list[i].message = $.parseRichText(list[i].message)
 					}
 					self.loaded = true
-					self.getDone(true, list)
+					self.getDone(true, list, page.num)
 				}).catch((err) => {
 					self.getDone(false)
 				})

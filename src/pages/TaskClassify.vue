@@ -57,6 +57,9 @@
 					api: 'site_check_group'
 				}
 				var _this = this
+
+				if(app.getUid() == '') return
+
 				http({
 					data,
 					method: 'post'

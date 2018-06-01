@@ -27,12 +27,12 @@
 				  		<div v-if="type==1" class="btn-item" @click="changePanel(2)">
 				  			<i v-if="showCode != 2" class="icon iconfont icon-xiangji"></i>
 				  			<i v-if="showCode == 2" class="icon iconfont active icon-camerafill"></i>
-				  			<input type="file" name="" class="upload-input" ref="uploadInput1" @change="uploadChange">
+				  			<input accept="image/*" capture="camera" type="file" name="" class="upload-input" ref="uploadInput1" @change="uploadChange">
 				  		</div>
 				  		<div v-if="type==1" class="btn-item" @click="changePanel(2)">
 				  			<i v-if="showCode != 2" class="icon iconfont icon-pic"></i>
 				  			<i v-if="showCode == 2" class="icon iconfont active icon-picfill"></i>
-				  			<input type="file" name="" class="upload-input" ref="uploadInput1" @change="uploadChange">
+				  			<input accept="image/*" capture="camera" type="file" name="" class="upload-input">
 				  		</div>
 				  		<div v-if="type==1" class="btn-item">
 				  			<a href="#" class="icon iconfont open-popup btn-topic" data-popup=".popup-topic">#</a>
@@ -44,25 +44,11 @@
 
 				  	</div>			  		
 			  	</div>
-
 			  	<brow-panel v-if="showCode == 1"></brow-panel>
-
-			  	<div v-if="multis.length > 0 && showCode == 2" class="multi-preview">
-			  		<div class="multi-content" :style="{width: (95 * (multis.length + 1)) + 10 + 'px'}">
-				  		<div v-for="(item, index) in multis" class="item">
-				  			<span class="item-span" :style="{'background-image': item}"></span>
-				  			<a class="item-close" @click="removeMulti(index)">
-				  				<span class="btn-close"></span>
-				  			</a>
-				  		</div>
-				  		<div class="item add">
-				  			<input type="file" name="" class="upload-input" ref="uploadInput2" @change="uploadChange">
-				  		</div>			  			
-			  		</div>
-			  	</div>	  	
-
-
+				<multi-preview v-if="showCode == 2" :data="enclosures" :inputDom="inputDom"></multi-preview>
 			  </div>
+
+			  <!-- <common-footer-nav></common-footer-nav> -->
 
 			</div>  
         </f7-pages>
@@ -99,14 +85,19 @@
     	</div>
     </div>
 
+    <!-- <common-editor-popup></common-editor-popup> -->
+
   </div>
 </template>
 
 <script>
 	import {gethttp} from '../common/http'
-	import {bus, EVENT} from '../common/bus'
+	import {eventbus, EVENTS} from '../js/bus'
 	import BrowPanel from '../component/BrowPanel'
 	import EnclosureUploader from '../js/EnclosureUploader'
+	// import CommonFooterNav from '../component/CommonFooterNav'
+	// import CommonEditorPopup from '../component/CommonEditorPopup'
+	import MultiPreview from '../component/MultiPreview'
 
 	let http = gethttp({
 		indicator: true
@@ -126,12 +117,19 @@
 				topics: [],
 				selTopic: {},
 				pid: null,
-				cid: null
+				cid: null,
+				inputDom: null,
+				brow: null
+			}
+		},
+		watch: {
+			brow(newVal, oldVal) {
+				this.comment += newVal
 			}
 		},
 		created() {
 			var _this = this
-			bus.$on(EVENT.SEL_BROW, (d) => {
+			eventbus.$on(EVENTS.SEL_BROW, (d) => {
 				_this.comment += d
 			})
 			this.replyType = $.getUrlParam('reply_type')
@@ -161,9 +159,16 @@
 				})
 			},
 			uploadChange(e) {
+				this.inputDom = e
+				return
 				var _this = this
 				var loader = e.target
 				var _URL = window.URL || window.webkitURL;
+
+				this.multiUrl = _URL
+
+				return
+
 			    var file
 			    if ((file = loader.files[0])) {
 					var _this = this
@@ -332,7 +337,10 @@
 			}
 		},
 		components: {
-			BrowPanel
+			BrowPanel,
+			// CommonFooterNav,
+			// CommonEditorPopup,
+			MultiPreview
 		}
 	}
 </script>

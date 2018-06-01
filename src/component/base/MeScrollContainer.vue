@@ -1,6 +1,7 @@
 <template>
-	<div class="mescroll" :id="'mescroll' + uniqueKey" style="height: -webkit-fill-available; overflow: scroll;">
+	<div class="mescroll" :id="ids.mescroll" style="height: -webkit-fill-available; overflow: scroll;">
 		<div>
+			<div :id="ids.emptyWrap"></div>
 			<!-- <list-item v-for="(item, $index) in list" :data="item" :key="$index"></list-item> -->
 			<content-wrap :data="data" :loaded="loaded"></content-wrap>
 		</div>
@@ -8,15 +9,17 @@
 </template>
 
 <script type="text/javascript">
-	import MeSroll from 'mescroll'
 	export default {
-		props: ['uniqueKey', 'initload'],
+		props: ['uniqueKey', 'initload','mescrollArr'],
 		data() {
 			return {
-				data: [],
-				pageIndex: 1,
-				displayNumber: 15,
-				mescroll: null
+				data: {},
+				pageSize: 15,
+				mescroll: null,
+				ids: {
+					mescroll: 'mescroll' + this.uniqueKey,
+					emptyWrap: 'empty-wrap' + this.uniqueKey
+				}
 			}
 		},
 		watch: {
@@ -32,35 +35,39 @@
 		methods: {
 			init() {
 				if(this.initload == true && this.mescroll == null) {
-					var id = 'mescroll' + this.uniqueKey
-					this.mescroll = new MeSroll(id, {
-						down: {
-							callback: this.downCallback
-						},
+					this.mescroll = new MeScroll(this.ids.mescroll, {
+						// down: {
+						// 	callback: this.downCallback
+						// },
 						up: {
-							callback: this.upCallback
+							callback: this.upCallback,
+							isBounce: false,
+							empty: {
+								icon: require("../../assets/mescroll-empty.png"), //图标,默认null
+								tip: "暂无相关数据~", //提示
+							},
+							clearEmptyId: this.ids.emptyWrap
 						}
 					})
+					if(this.mescrollArr) {
+						this.mescrollArr.push(this.mescroll)
+					}
 				}
 			},
-			downCallback() {
-				this.pageIndex = 1
-				this.getListData()
-			},
+			// downCallback() {
+			// 	this.pageIndex += 1
+			// 	this.getListData()
+			// },
 			upCallback(page) {
-				this.pageIndex += 1
-				this.getListData()
+				this.getListData(page)
 			},
-			getListData(page) {
-				this.mescroll.endSuccess(0, false)
-			},
-			getDone(isSucc, list) {
+			getDone(isSucc, list, pageIndex) {
 				if(isSucc) {
-					this.mescroll.endSuccess(list.length, list.length < self.displayNumber ? false : true)
-					this.data.list = this.pageIndex > 1 ? this.data.list.concat(list) : list
+					this.mescroll.endSuccess(list.length, list.length >= this.displayNumber ? true : false)
+					this.data.list = pageIndex > 1 ? data.list.concat(list) : list
 				}else {
 					this.mescroll.endErr()
-					this.pageIndex -= this.pageIndex > 1 ? 1 : 0
+					this.pageIndex -= pageIndex > 1 ? 1 : 0
 				}
 			}
 		},

@@ -21,7 +21,7 @@
 </template>
 <script type="text/javascript">
 	export default {
-		props: ['data', 'urls', 'readonly'],
+		props: ['data', 'urls', 'readonly', 'inputDom'],
 		data() {
 			return {
 				maxSize: 320,//图片最大尺寸,用于图片压缩
@@ -33,11 +33,15 @@
 				this.multis = this.urls
 			}
 		},
+		watch: {
+			inputDom(newVal, oldVal) {
+				this.uploadChange(newVal)
+			}
+		},
 		methods: {
 			uploadChange(e) {
 				var _this = this
 				var loader = e.target
-				var _URL = window.URL || window.webkitURL;
 			    var file
 			    if ((file = loader.files[0])) {
 			    	_this.compress(file)//图片压缩

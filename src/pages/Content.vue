@@ -23,7 +23,7 @@
 										</div>
 									</div>
 									<div class="more-operation">
-										<a class="more-operation-btn" @click="openPopover($event)"></a>
+										<a class="more-operation-btn f7-icons fontsize-2x" @click="openPopover($event)">more</a>
 									</div>
 								</div>
 								<div class="item">
@@ -33,7 +33,7 @@
 								<media-wrap :medias="data.img" :block="true"></media-wrap>
 
 							</div>
-						</div>	
+						</div>
 
 						<div class="floor-list">
 							<comment v-for="(item, $index) in comments" :data="item" :key="$index"></comment>				
@@ -41,6 +41,9 @@
 
 					</div>
 				</div>
+
+				<common-footer-nav :external="external"></common-footer-nav>
+
 			</div>
         </f7-pages>
       </f7-view>
@@ -52,12 +55,14 @@
 			<div class="list-block">
 				<ul>
 					<li><a href="#" class="list-button item-link" @click="goReply">回复</a></li>
-					<li><a href="#" class="list-button item-link">收藏</a></li>
-					<li><a href="#" class="list-button item-link">举报</a></li>
+<!-- 					<li><a href="#" class="list-button item-link">收藏</a></li>
+					<li><a href="#" class="list-button item-link">举报</a></li> -->
 				</ul>
 			</div>
 		</div>
 	</div>
+
+	<common-editor-popup :pid="data.pid" :comm="comm"></common-editor-popup>
 
   </div>
 </template>
@@ -65,6 +70,8 @@
 <script>
 	import MediaWrap from '../component/MediaWrap'
 	import Comment from '../component/Comment'
+	import CommonFooterNav from '../component/CommonFooterNav'
+	import CommonEditorPopup from '../component/CommonEditorPopup'
 	import {gethttp} from '../common/http'
 	import {eventbus, EVENTS} from '../js/bus'
 
@@ -75,22 +82,32 @@
 	export default {
 		data() {
 			return {
-				data: null,
+				data: {
+					img: []
+				},
 				comments: [],
 				pid: null,
-				cid: null
+				cid: null,
+				external: true,
+				comm: null
 			}
 		},
 		created() {
-			var _this = this
+			var self = this
 			eventbus.$on(EVENTS.MORE_OPERATION_TAP, function(c){
-				_this.openPopover(c.e, c.data.id)
+				self.openPopover(c.e, c.data.id)
+			})
+			eventbus.$on(EVENTS.COMMENT_SUCC, () => {
+				self.getComments()
 			})
 			this.pid = $.getUrlParam('pid')
 			this.getContent()
 			this.getComments()
 		},
 		methods: {
+			openCommPopup() {
+				this.external = true
+			},
 			openPopover(e, cid) {
 				this.cid = cid
 				this.$f7.popover('.popover-more', e.currentTarget);
@@ -138,21 +155,12 @@
 				        onClick: function() {
 				        	_this.goReply()
 				        }
-				    },
-				    {
-				        text: '收藏'
-				    },
-				    {
-				        text: '举报',
-				    },
-				    {
-				        text: '取消',
-				        color: 'red'
-				    },
+				    }
 				];
-				this.$f7.actions(buttons);		
+				this.$f7.actions(buttons)
 			},
 			goReply() {
+				if(!app.isLogin(this)) return
 				var url = 'reply.html?webview_transition&type=2&pid=' + this.pid
 				if(this.cid) {
 					url = url + '&cid=' + this.cid
@@ -162,7 +170,9 @@
 		},
 		components: {
 			MediaWrap,
-			Comment
+			Comment,
+			CommonFooterNav,
+			CommonEditorPopup
 		}
 	}
 </script>

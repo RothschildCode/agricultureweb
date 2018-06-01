@@ -18,12 +18,12 @@
 			</ul>
 		</div>
 		<sociality v-for="(item, $index) in data.list" :data="item" :key="$index"></sociality>
-		<div v-if="data.list.length < 1" class="none-wrap">
+<!-- 		<div v-if="data.list.length < 1" class="none-wrap">
 			<div v-if="loaded" class="label">无数据</div>
 			<div v-if="!loaded" class="label">
 				<div class="logo-gif"></div>
 			</div>
-		</div>
+		</div> -->
 	</div>
 </template>
 

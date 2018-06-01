@@ -17,7 +17,7 @@
 					<span style="-webkit-box-orient: vertical;" v-html="data.message"></span>
 				</div>
 			</div>
-			<media-wrap :medias="data.img"></media-wrap>
+			<media-wrap v-if="data.img[0] != ''" :medias="data.img"></media-wrap>
 		</div>
 		<div class="row no-gutter card-footer">
 			<div class="col-33 align-center">
@@ -29,7 +29,7 @@
 			</div>
 			<div class="col-33 align-center">
 				<span :style="{color: data.isPraise ? 'red' : ''}">
-					<i class="f7-icons media" :style="{color: data.isPraise ? 'red' : ''}" @click="praise">{{data.isPraise ? 'heart_fill' : 'heart'}}</i>
+					<i class="f7-icons media" :class="{'praise-active': data.isPraise}" @click="praise">{{data.isPraise ? 'heart_fill' : 'heart'}}</i>
 					{{data.praise_num}}
 				</span>
 			</div>
@@ -50,10 +50,16 @@
 				window.location.href = './content.html?pid=' + this.data.pid + '&webview_transition'
 			},
 			reply() {
+				if(!app.isLogin(this)) return
 				window.location.href = 'reply.html?webview_transition&type=2&pid=' + this.data.pid
 			},
 			praise() {
-				if(this.data.isPraise) return
+				if(!app.isLogin(this)) {
+					return
+				}
+				if(this.data.isPraise) {
+					return
+				}
 				this.data.isPraise = true
 				this.data.praise_num = parseInt(this.data.praise_num) + 1
 				http({

@@ -8,6 +8,7 @@
 @import './common.less';
 @import './media.less';
 @import './news.less';
+@import './commonfooternav.less';
 
 @import './variable.less';
 
@@ -166,8 +167,8 @@
     -webkit-tap-highlight-color: transparent;
     line-height: 45px;
     background-color: #fff;
-    border-top: solid 1px #f0f0f0;
-    border-bottom: solid 1px #f0f0f0;
+    // border-top: solid 1px #f0f0f0;
+    // border-bottom: solid 1px #f0f0f0;
     .btn-item {
     	padding: 0 1em;
     	position: relative;
@@ -209,14 +210,19 @@
 }
 
 .brow-panel-wrapper{
-	padding: 1em;
+	padding: 0 1em;
+	height: 11rem;
+	overflow: scroll;
+	transition: all .2s;
+	.row {
+		margin: .5rem 1rem;
+	}
 	.icon {
-		width: 2em;
-		height: 2em;
+		width: 2rem;
+		height: 2rem;
 	}
 }
 .brow-item-wrapper {
-	margin: .5em 0;
 	text-align: center;
 }
 .icon {
@@ -436,6 +442,15 @@
 			    padding-left: 43px;
 			    text-align: justify;   			
 	   		}
+	   		.info {
+	   			padding-left: 43px;
+	   			margin-top: 1rem;
+	   			font-size: .8rem;
+	   			color: #666;
+	   			.btn-reply {
+	   				margin: 0 1rem;
+	   			}
+	   		}
 	   		.medias-one-pic {
 				width: 100%;
 			    height: 0;
@@ -492,10 +507,11 @@
     right: 0;
     width: 18px;
     height: 18px;
-    background-image: url(//tb2.bdstatic.com/tb/mobile/spb/widget/post_item_bxs/img/icon_card_more_n_1bb7e17.png);
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
+    color: #000;
+    // background-image: url(//tb2.bdstatic.com/tb/mobile/spb/widget/post_item_bxs/img/icon_card_more_n_1bb7e17.png);
+    // background-repeat: no-repeat;
+    // background-size: contain;
+    // background-position: center;
     -webkit-tap-highlight-color: rgba(255,255,255,.3);	
 }
 
@@ -813,5 +829,28 @@ i.icon.icon-f7 {
 	}
 }
 .content-block-title {
-	margin: 15px 10px;
+	margin: 15px 10px;  
+}
+
+.praise-active {
+	animation: scaleOnece .5s;
+	animation-fill-mode: forwards;
+}
+@keyframes scaleOnece {
+	50% {
+		transform: scale(2);
+	}
+	100% {
+		transform: scale(1);
+		color: #ff5983;
+	}
+}
+.footer-nav {
+	position: fixed;
+	z-index: 2001;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	min-height: 2rem;
+	border-top: solid 1px #f0f0f0;
 }

@@ -1,13 +1,8 @@
 import querystring from 'querystring'
 import axios from 'axios'
 
-import {bus} from './bus'
+import {eventbus} from '../js/bus'
 
-window.thirdtools = {
-	getUid: function() {
-		return 1
-	}
-}
 
 var base_url = '/api/university/Interface.php'
 // var base_url = '/local/university/Interface.php'
@@ -17,7 +12,7 @@ var http = axios.create({
 	url: base_url,
 	timeout: 10000,
 	transformRequest: [function (data) { 
-		data.uid = window.thirdtools.getUid()
+		data.uid = app.getUid()
 		return querystring.stringify(data)
 	}],
 	transformResponse: [function (data) {
@@ -27,7 +22,7 @@ var http = axios.create({
 	validateStatus: function(status) {
 		var connected = status >= 200 && status < 300
 		if(!connected) {
-			bus.$f7.addNotification({
+			eventbus.$f7.addNotification({
 				title: '网络错误',
 				subtitle: '网络请求失败,请检查您的网络'
 			})
@@ -40,8 +35,8 @@ var http_indicator = axios.create({
 	url: base_url,
 	timeout: 10000,
 	transformRequest: [function (data) {  
-		bus.$f7.showIndicator()
-		data.uid = window.thirdtools.getUid()
+		eventbus.$f7.showIndicator()
+		data.uid = app.getUid()
 		return querystring.stringify(data)
 	}],
 	transformResponse: [function (data) {
@@ -49,10 +44,10 @@ var http_indicator = axios.create({
 	}],
 	headers: {'Content-Type': 'application/x-www-form-urlencoded'},
 	validateStatus: function(status) {
-		bus.$f7.hideIndicator()
+		eventbus.$f7.hideIndicator()
 		var connected = status >= 200 && status < 300
 		if(!connected) {
-			bus.$f7.addNotification({
+			eventbus.$f7.addNotification({
 				title: '网络错误',
 				subtitle: '网络请求失败,请检查您的网络'
 			})
@@ -73,9 +68,9 @@ function gethttp(c) {
 		timeout: 10000,
 		transformRequest: [function (data) {  
 			if(conf.indicator) {
-				bus.$f7.showIndicator()
+				eventbus.$f7.showIndicator()
 			}
-			data.uid = window.thirdtools.getUid()
+			data.uid = app.getUid()
 			return querystring.stringify(data)
 		}],
 		transformResponse: [function (data) {
@@ -84,12 +79,12 @@ function gethttp(c) {
 		headers: {'Content-Type': 'application/x-www-form-urlencoded'},
 		validateStatus: function(status) {
 			if(conf.indicator) {
-				bus.$f7.hideIndicator()
+				eventbus.$f7.hideIndicator()
 			}
 			var connected = status >= 200 && status < 300
 			if(conf.notification) {
 				if(!connected) {
-					// bus.$f7.addNotification({
+					// eventbus.$f7.addNotification({
 					// 	title: '网络错误',
 					// 	subtitle: '网络请求失败,请检查您的网络'
 					// })

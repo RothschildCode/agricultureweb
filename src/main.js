@@ -3,12 +3,13 @@ import 'framework7'
 import Framework7Vue from 'framework7-vue'
 import jquery from 'jquery'
 import './plugins/brow/iconfont.js'
+import MeScroll from './plugins/mescroll/mescroll.js'
 import './common/util'
 
 import 'framework7/dist/css/framework7.ios.min.css'
 import 'framework7/dist/css/framework7.ios.colors.min.css'
 import 'framework7-icons/css/framework7-icons.css'
-import 'mescroll/src/mescroll.min.css'
+import './plugins/mescroll/mescroll.css'
 import './css/app.less'
 
 

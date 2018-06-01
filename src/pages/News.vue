@@ -3,17 +3,14 @@
   <div id="app">
     <f7-views>
       <f7-view id="main-view" main>
-		<subnavbar :list="subnavbarItems" :activeIndex="tabIndex" :more="false"></subnavbar>
+		<subnavbar :list="subnavbarItems" :activeIndex="tabIndex" :more="false" :mescrollArr="mescrollArr"></subnavbar>
         <f7-pages>
 			<div data-page="news" class="page news-page navbar-through">		
-				<a href="#" class="floating-button color-pink" @click="goPublish">
-					<i class="f7-icons">add</i>
-				</a>
 				<div class="page-content">
 					<div class="swiper-container" ref="swiper">
 						<div class="swiper-wrapper">
 							<div v-for="(item, $index) in subnavbarItems" class="swiper-slide">
-								<news-container :uniqueKey="$index" :condition="item" :initload="$index == tabIndex"></news-container>
+								<news-container :uniqueKey="$index" :condition="item" :initload="$index == tabIndex" :mescrollArr="mescrollArr"></news-container>
 							</div>
 						</div>
 					</div>
@@ -41,7 +38,8 @@
 				subnavbarItems: [],
 				swiper: null,
 				tabIndex: 0,
-				pageId: 2
+				pageId: 2,
+				mescrollArr: []
 			}
 		},
 		created() {

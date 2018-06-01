@@ -1,0 +1,59 @@
+.common-editor {
+	background: #fff;
+	.wrap {
+		line-height: 1rem;
+	}
+	.multi-wrap {
+		img {
+			width: 100%;
+		}
+		.label {
+			height: 1rem;
+			line-height: 1rem;
+			text-align: center;
+			color: #fff;
+			background: #000;
+			opacity: .2;
+		}
+	}
+	.editor-area {
+		background: #f6f6f6;
+	}
+	.row {
+		margin: .5rem 1rem;
+	}
+	.comm-input {
+		padding: .5rem 5%;
+		border: none;
+		background: none;
+		font-size: 1rem;
+		line-height: 1rem;
+		width: 90%;
+	}
+	.multi-preview,
+	.multi-content,
+	.multi-content .item {
+		margin: 0;
+		width: 1rem;
+		height: 1rem;
+	}
+	.multi-content .item .item-close {
+		margin-top: 0;
+		top: 50%;
+		left: 50%;
+		transform: translateX(-50%) translateY(-50%);
+	}
+	.send span{
+		color: #d2d2d2 !important;
+		background: none !important;
+		&.active {
+			color: #00b38c !important;
+		}
+	}
+}
+.popup-common-editor {
+	position: fixed;
+	top: auto;
+	bottom: 0;
+	height: auto;
+}

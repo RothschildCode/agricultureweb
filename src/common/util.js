@@ -1,6 +1,6 @@
 import jQuery from 'jquery'
 import {brows} from './browsMap'
-import {bus} from './bus'
+import {eventbus, EVENTS} from '../js/bus'
 
 (function ($) {
     $.getUrlParam = function (name) {
@@ -39,14 +39,6 @@ import {bus} from './bus'
     	}
     	return j.isobject ? JSON.parse(j.data) : j.data
     }
-
-	window.VueG = {
-		loadPage: function(url) {
-			bus.$f7.showIndicator()
-			window.location.href = url
-		}
-	}
-
 })(jQuery);
 
 
@@ -75,6 +67,33 @@ import {bus} from './bus'
 				data.data = JSON.stringify(v)
 			}
 			localStorage.setItem(k, JSON.stringify(data))
+		},
+		isLogin() {
+			var isLogin = true
+			var uid = this.getUid()
+			if(uid == '') {
+				this.openLoginActivity()
+				isLogin = false
+			}
+			return isLogin
+		},
+		getUid() {
+			if(window.thirdtools&&window.thirdtools.getUid) {
+				var uid = window.thirdtools.getUid()
+				if(uid && uid != '') {
+					return uid
+				}
+				return ''
+			}
+			return ''
+		},
+		openLoginActivity() {
+			if(window.thirdtools && window.thirdtools.goLogin) {
+				window.thirdtools.goLogin()
+			}
+		},
+		openCommPopup(data) {
+			eventbus.$emit(EVENTS.OPEN_COMM_POPUP, data)
 		}
 	}
 

@@ -18,9 +18,13 @@
 
 			<div class="item">
 				<span class="content" v-html="data.comment"></span>
-				<div v-if="replylist.length > 0" class="reply-wrap">
+				<div class="info">
+					<span class="label-time">1小时前</span>
+					<b class="btn-reply" @click="onreply">回复</b>
+				</div>
+				<div v-if="replies.length > 0" class="reply-wrap">
 					<ul>
-						<li v-for="reply in replylist" class="reply-item">
+						<li v-for="reply in replies" class="reply-item">
 							<a class="user-name">{{reply.username}}</a>:
 							<span class="reply-content" v-html="reply.content"></span>
 						</li>
@@ -39,7 +43,7 @@
 		props: ['data'],
 		data() {
 			return {
-				replylist: []
+				replies: []
 			}
 		},
 		created() {
@@ -59,8 +63,11 @@
 					for(var i = 0; i < list.length; i++) {
 						list[i].content = $.parseRichText(list[i].content)
 					}
-					_this.replylist = list
+					_this.replies = list
 				})
+			},
+			onreply() {
+				app.openCommPopup({cid: this.data.cid, name: this.data.username})
 			}
 		},
 		components: {

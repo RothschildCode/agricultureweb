@@ -7,7 +7,6 @@
 		props: ['condition', 'channel'],
 		data() {
 			return {
-				pageSize: 15,
 				pageId: 1,
 				loaded: false
 			}
@@ -19,11 +18,11 @@
 			}
 		},
 		methods: {
-			getListData() {
+			getListData(page) {
 				var param = {
 					api: 'college_post_list',
 					displayNumber: this.pageSize,
-					pageIndex: this.pageIndex,
+					pageIndex: page.num,
 					fid: 2,
 					pageid: this.pageId
 				}
@@ -47,7 +46,7 @@
 						list[i].message = $.parseRichText(list[i].message)
 					}
 					self.loaded = true
-					self.getDone(true, list)
+					self.getDone(true, list, page.num)
 				}).catch((err) => {
 					self.getDone(false)
 				})

@@ -6,9 +6,10 @@
 		<subnavbar v-if="!channel" :list="subnavbarItems" :activeIndex="tabIndex" :more="true"></subnavbar>
         <f7-pages>
 			<div data-page="news" class="page news-page" :class="{'navbar-through': !channel}">		
-				<a href="#" class="floating-button color-pink" @click="goPublish">
+<!-- 				<a href="#" class="floating-button color-pink" @click="goPublish">
 					<i class="f7-icons">add</i>
-				</a>
+				</a> -->
+				<float-button type="1" :page="pageId"></float-button>
 				<div class="page-content">
 					<div class="swiper-container" ref="swiper">
 						<div class="swiper-wrapper">
@@ -29,6 +30,7 @@
 	import SocialityContainer from '../component/SocialityContainer'
 	import Subnavbar from '../component/Subnavbar'
 	import MediaWrap from '../component/MediaWrap'
+	import FloatButton from '../component/FloatButton'
 	import {eventbus, EVENTS} from '../js/bus'
 	import {http} from '../common/http'
 
@@ -116,7 +118,8 @@
 		components: {
 			SocialityContainer,
 			Subnavbar,
-			MediaWrap
+			MediaWrap,
+			FloatButton
 		}
 	}
 </script>

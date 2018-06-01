@@ -1,6 +1,6 @@
 <template>
 	<div class="more-operation">
-		<a class="more-operation-btn" @click="openPopover($event)"></a>
+		<a class="more-operation-btn f7-icons fontsize-2x" @click="openPopover($event)">more</a>
 	</div>	
 </template>
 
