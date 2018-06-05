@@ -13,7 +13,7 @@
 						<span v-html="data.dateline"></span>
 					</div>
 				</div>
-				<more-operation-btn :data="data"></more-operation-btn>
+				<!-- <more-operation-btn :data="data"></more-operation-btn> -->
 			</div>
 
 			<div class="item">
@@ -39,6 +39,7 @@
 <script type="text/javascript">
 	import MoreOperationBtn from '../component/MoreOperationBtn'
 	import {http} from '../common/http'
+	import {eventbus, EVENTS} from '../js/bus'
 	export default {
 		props: ['data'],
 		data() {
@@ -48,6 +49,12 @@
 		},
 		created() {
 			this.getReplylist()
+			var self = this
+			eventbus.$on(EVENTS.COMMENT_SUCC, (data) => {
+				if(data.cid && data.cid == self.data.id) {
+					self.getReplylist()
+				}
+			})			
 		},
 		methods: {
 			getReplylist() {
@@ -67,7 +74,7 @@
 				})
 			},
 			onreply() {
-				app.openCommPopup({cid: this.data.cid, name: this.data.username})
+				app.openCommPopup({cid: this.data.id, name: this.data.username})
 			}
 		},
 		components: {

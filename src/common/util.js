@@ -8,9 +8,7 @@ import {eventbus, EVENTS} from '../js/bus'
         var r = window.location.search.substr(1).match(reg);
         if (r != null) return unescape(r[2]); return null;
     }
-
     window.$ = jQuery
-
     $.parseRichText = function(text) {
     	var t  = text
     	for(var i = 0; i < brows.length; i++) {
@@ -20,7 +18,6 @@ import {eventbus, EVENTS} from '../js/bus'
     	}
     	return t
     }
-
     $.setData = function(k, v) {
     	var data = {
     		isobject: false
@@ -39,6 +36,13 @@ import {eventbus, EVENTS} from '../js/bus'
     	}
     	return j.isobject ? JSON.parse(j.data) : j.data
     }
+
+    window.thirdtools = {
+    	getUid() {
+    		return 1;
+    	}
+    }
+
 })(jQuery);
 
 
@@ -54,7 +58,6 @@ import {eventbus, EVENTS} from '../js/bus'
 				return JSON.parse(odata.data)
 			}
 			return odata.data
-
 		},
 		set: (k, v) => {
 			var data = {
@@ -93,6 +96,7 @@ import {eventbus, EVENTS} from '../js/bus'
 			}
 		},
 		openCommPopup(data) {
+			if(!this.isLogin()) return
 			eventbus.$emit(EVENTS.OPEN_COMM_POPUP, data)
 		}
 	}

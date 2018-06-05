@@ -3,7 +3,6 @@ import axios from 'axios'
 
 import {eventbus} from '../js/bus'
 
-
 var base_url = '/api/university/Interface.php'
 // var base_url = '/local/university/Interface.php'
 // var base_url = '../api.action' //prod

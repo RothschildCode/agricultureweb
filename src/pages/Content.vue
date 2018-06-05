@@ -22,9 +22,9 @@
 											<span v-html="data.dateline"></span>
 										</div>
 									</div>
-									<div class="more-operation">
+<!-- 									<div class="more-operation">
 										<a class="more-operation-btn f7-icons fontsize-2x" @click="openPopover($event)">more</a>
-									</div>
+									</div> -->
 								</div>
 								<div class="item">
 									<span class="title" v-html="data.message"></span>
@@ -42,27 +42,14 @@
 					</div>
 				</div>
 
-				<common-footer-nav :external="external"></common-footer-nav>
+				<common-footer-nav :pid="pid"></common-footer-nav>
 
 			</div>
         </f7-pages>
       </f7-view>
     </f7-views>
 
-	<!-- Links popover -->
-	<div class="popover popover-more">
-		<div class="popover-inner">
-			<div class="list-block">
-				<ul>
-					<li><a href="#" class="list-button item-link" @click="goReply">回复</a></li>
-<!-- 					<li><a href="#" class="list-button item-link">收藏</a></li>
-					<li><a href="#" class="list-button item-link">举报</a></li> -->
-				</ul>
-			</div>
-		</div>
-	</div>
-
-	<common-editor-popup :pid="data.pid" :comm="comm"></common-editor-popup>
+	<common-editor-popup></common-editor-popup>
 
   </div>
 </template>
@@ -94,11 +81,10 @@
 		},
 		created() {
 			var self = this
-			eventbus.$on(EVENTS.MORE_OPERATION_TAP, function(c){
-				self.openPopover(c.e, c.data.id)
-			})
-			eventbus.$on(EVENTS.COMMENT_SUCC, () => {
-				self.getComments()
+			eventbus.$on(EVENTS.COMMENT_SUCC, (data) => {
+				if(!data.cid) {
+					self.getComments()
+				}
 			})
 			this.pid = $.getUrlParam('pid')
 			this.getContent()

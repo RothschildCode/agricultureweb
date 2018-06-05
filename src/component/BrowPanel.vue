@@ -34,8 +34,8 @@
 			this.group = group
 		},
 		mounted() {
-			this.panel = $(this.$refs.panel)
-			if(this.defaultClose) {
+			this.panel = this.$$(this.$refs.panel)
+			if(this.defaultClose == true) {
 				this.close()
 			}
 		},
@@ -44,10 +44,10 @@
 				eventbus.$emit(EVENTS.SEL_BROW, '（#' + b.name + '）')
 			},
 			open() {
-				this.panel.css({height: '11rem'})
+				this.panel.css('height', '11rem')
 			},
 			close() {
-				this.panel.css({height: '0'})
+				this.panel.css('height', '0')
 			}
 		}
 	}

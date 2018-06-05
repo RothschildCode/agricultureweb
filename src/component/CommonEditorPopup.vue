@@ -7,7 +7,7 @@
 					<textarea v-model="comment" rows="3" class="comm-input" ref="commInput" :placeholder="name == null ? '发表你的看法吧' : '回复@' + name"></textarea>
 					<div class="hidden" ref="trigger"></div>
 				</div>
-				<div v-if="multi != null" class="col-20" @click="removeMulti">
+				<div v-if="multi != null && supportImage" class="col-20" @click="removeMulti">
 					<!-- multi preview -->
 					<div class="multi-wrap">
 						<img width="100%" :src="multi">
@@ -17,15 +17,15 @@
 			</div>
 
 			<div class="row">
-			  	<div class="media-bar">
+			  	<div class="media-bar" style="border: none;">
 			  		<div class="btn-item" @click="browBtnClick">
 			  			<i class="icon iconfont icon-emoji"></i>
 			  		</div>
-			  		<div class="btn-item">
+			  		<div v-if="supportImage" class="btn-item">
 			  			<i class="icon iconfont icon-xiangji"></i>
 			  			<input accept="image/*" capture="camera" type="file" name="" class="upload-input" ref="uploadInput1" @change="uploadChange">
 			  		</div>
-			  		<div class="btn-item">
+			  		<div v-if="supportImage" class="btn-item">
 			  			<i class="icon iconfont icon-pic"></i>
 			  			<input accept="image/*" capture="camera" type="file" name="" class="upload-input" ref="uploadInput1" @change="uploadChange">
 			  		</div>
@@ -56,7 +56,7 @@
 			return {
 				subject: '',
 				comment: '',
-				showCode: 0,
+				browOpened: false,
 				multi: null,
 				enclosures: [],
 				initUploader: false,
@@ -67,7 +67,9 @@
 				pid: null,
 				cid: null,
 				name: null,
-				blow: null
+				brow: null,
+				domObj: {},
+				supportImage: false
 			}
 		},
 		created() {
@@ -84,36 +86,33 @@
 		},
 		mounted() {
 			var $pop = this.$$(this.$refs.popup)
-			var $inp = $(this.$refs.commInput)
-			var $t = $(this.$refs.trigger)
-			this.blow = this.$refs.browpanel
+			var $inp = this.$$(this.$refs.commInput)
+			var vbrow = this.$refs.browpanel
 			var self = this
-			$inp.blur(() => {
-				self.active = false
-			})
-			$t.on('click', () => {
-				$inp.focus()
-			})
 			$pop.on('open', function () {
-				$t.trigger('click')
+				self.focus()
 			})
 			$pop.on('close', () => {
+				vbrow.close()
 				$inp.blur()
 			})
 			$pop.on('closed', () => {
 				self.cid = null
 				self.name = null
+				self.comment = ''
 			})
+			this.domObj.pop = $pop
+			this.domObj.input = $inp
+			this.domObj.brow = vbrow
 		},
 		methods: {
 			focus() {
-				$(this.$refs.trigger).trigger('click')
+				this.domObj.input.focus()
 			},
 			blur() {
-				$(this.$refs.commInput).blur()
+				this.domObj.input.blur()
 			},
 			uploadChange(e) {
-				this.focus()
 				var _this = this
 				var loader = e.target
 				var _URL = window.URL || window.webkitURL;
@@ -145,23 +144,19 @@
 			},
 			browBtnClick() {
 				var self = this
-				if(this.showCode == 1) {
-					this.showCode = null
-					this.blow.close()
-					setTimeout(() => {
-						self.focus()
-					}, 200)
+				if(this.browOpened) {
+					this.domObj.brow.close()
+					self.focus()
 				}else {
-					this.showCode = 1
 					this.blur()
 					setTimeout(() => {
-						self.blow.open()
+						self.domObj.brow.open()
 					}, 200)
 				}
+				this.browOpened = !this.browOpened
 			},
 			submit() {
 				if(this.comment == '') return
-				if(!app.isLogin(this)) return
 				this.reply()
 			},
 			reply() {
@@ -185,19 +180,16 @@
 						data: param,
 						method: 'post'
 					}).then((res) => {
-						var msg = ''
 						if(res.data.s == 0) {
-							msg = '回复成功:)'
-							eventbus.$emit(EVENTS.COMMENT_SUCC)
+							self.replySucc()
 						}else {
-							msg = '糟糕，回复失败了:('
+							self.$f7.modal({
+								title: '糟糕，回复失败了:(',
+								buttons: [{
+									text: '好'
+								}]
+							})
 						}
-						self.$f7.modal({
-							title: msg,
-							buttons: [{
-								text: '好'
-							}]
-						})
 					})
 				})
 			},
@@ -207,12 +199,13 @@
 			removeMulti() {
 				this.multi = null
 			},
-			topicItemClick(data) {
-				this.selTopic = data
-				this.closePopup()
+			close() {
+
+				this.$f7.closeModal('.popup-common-editor')
 			},
-			closePopup() {
-				this.$f7.closeModal('.popup-topic')
+			replySucc() {
+				this.close()
+				eventbus.$emit(EVENTS.COMMENT_SUCC, {pid: this.pid, cid: this.cid})
 			}
 		},
 		components: {
