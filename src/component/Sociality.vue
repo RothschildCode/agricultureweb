@@ -3,7 +3,7 @@
 		<div class="floor-wrap" @click="onclick">
 			<div class="infos clearfix">
 				<div class="avatar">
-					<img :src="data.cover">
+					<img :src="data.authorheader">
 				</div>
 				<div class="author-time">
 					<div class="author-icons clearfix">

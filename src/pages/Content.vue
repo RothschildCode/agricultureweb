@@ -12,7 +12,7 @@
 							<div class="floor-wrap">
 								<div class="infos clearfix">
 									<div class="avatar">
-										<img :src="data.cover">
+										<img :src="data.header">
 									</div>
 									<div class="author-time">
 										<div class="author-icons">
@@ -108,7 +108,7 @@
 					method: 'post'
 				}).then((res) => {
 					var d = res.data.data
-					d.cover = 'http://39.107.99.122/university/images/img_14347674602997.jpg'
+					d.dateline = $.longToDate(d.dateline)
 					_this.data = d
 				}).catch((err) => {
 
@@ -125,7 +125,7 @@
 				}).then((res) => {
 					var list = res.data.data
 					for(var i = 0; i < list.length; i++) {
-						list[i].cover = 'http://39.107.99.122/university/images/img_14347674602997.jpg'
+						list[i].dateline = $.longToDate(list[i].dateline)
 						list[i].comment = $.parseRichText(list[i].comment)
 					}
 					_this.comments = list

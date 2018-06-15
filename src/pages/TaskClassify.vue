@@ -10,7 +10,7 @@
 					<div class="list-block">
 						<ul>
 							<li v-for="item in list" @click="onclick(item)">
-								<a href="" class="item-link item-content" @click="click(item)">
+								<a href="" class="item-link item-content">
 									<div class="item-media">
 										<i class="icon icon-f7">
 											<img :src="item.check_up_cover">
@@ -53,8 +53,13 @@
 		methods: {
 			getData() {
 				var _this = this
+				var area = app.getArea()
+				if(area == '') {
+					return
+				}
 				var data = {
-					api: 'site_check_group'
+					api: 'site_check_group',
+					area
 				}
 				var _this = this
 
@@ -69,7 +74,7 @@
 					alert(err)
 				})
 			},
-			click(data) {
+			onclick(data) {
 				// $.setData('taskclassify', data)
 				window.location.href = 'task.html?taskId='+data.check_up_id+'&webview_transition'
 			}

@@ -3,14 +3,14 @@
 		<div class="floor-wrap">
 			<div class="infos clearfix">
 				<div class="avatar">
-					<img :src="data.cover">
+					<img :src="data.header">
 				</div>
 				<div class="author-time">
 					<div class="author-icons">
 						<span class="author" v-html="data.username"></span>
 					</div>
 					<div class="time">
-						<span v-html="data.dateline"></span>
+						<!-- <span v-html="data.dateline"></span> -->
 					</div>
 				</div>
 				<!-- <more-operation-btn :data="data"></more-operation-btn> -->
@@ -19,7 +19,7 @@
 			<div class="item">
 				<span class="content" v-html="data.comment"></span>
 				<div class="info">
-					<span class="label-time">1小时前</span>
+					<span class="label-time" v-html="data.dateline"></span>
 					<b class="btn-reply" @click="onreply">回复</b>
 				</div>
 				<div v-if="replies.length > 0" class="reply-wrap">
@@ -68,6 +68,7 @@
 				}).then((res) => {
 					var list = res.data.data
 					for(var i = 0; i < list.length; i++) {
+						list[i].dateline = $.longToDate(list[i].dateline)
 						list[i].content = $.parseRichText(list[i].content)
 					}
 					_this.replies = list

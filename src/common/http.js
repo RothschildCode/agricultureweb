@@ -3,6 +3,12 @@ import axios from 'axios'
 
 import {eventbus} from '../js/bus'
 
+window.thirdtools = {
+	getUid() {
+		return 275
+	}
+}
+
 var base_url = '/api/university/Interface.php'
 // var base_url = '/local/university/Interface.php'
 // var base_url = '../api.action' //prod
@@ -94,7 +100,7 @@ function gethttp(c) {
 	})
 }
 
-// var fileUrl = '/file/'
+// var fileUrl = '/file/agricultureweb/file.action'
 var fileUrl = '../file.action' // prod
 var target = 'http://127.0.0.1:9999'
 
@@ -108,8 +114,7 @@ function getFileHttp(c) {
 		}],
 		transformResponse: [function (data) {
 			return JSON.parse(data).RETURN
-		}],
-		// headers: {'Content-Type': 'application/json'}
+		}]
 	})
 }
 

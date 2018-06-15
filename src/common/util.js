@@ -2,6 +2,27 @@ import jQuery from 'jquery'
 import {brows} from './browsMap'
 import {eventbus, EVENTS} from '../js/bus'
 
+Date.prototype.format = function (format) {
+    var date = {
+        "M+": this.getMonth() + 1,
+        "d+": this.getDate(),
+        "h+": this.getHours(),
+        "m+": this.getMinutes(),
+        "s+": this.getSeconds(),
+        "q+": Math.floor((this.getMonth() + 3) / 3),
+        "S+": this.getMilliseconds()
+    };
+    if (/(y+)/i.test(format)) {
+        format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+    }
+    for (var k in date) {
+        if (new RegExp("(" + k + ")").test(format)) {
+            format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
+        }
+    }
+    return format;
+};
+
 (function ($) {
     $.getUrlParam = function (name) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
@@ -36,13 +57,35 @@ import {eventbus, EVENTS} from '../js/bus'
     	}
     	return j.isobject ? JSON.parse(j.data) : j.data
     }
-
-    window.thirdtools = {
-    	getUid() {
-    		return 1;
-    	}
+    $.longToDate = function(v) {
+	    if (/^(-)?\d{1,10}$/.test(v)) {
+	        v = v * 1000;
+	    } else if (/^(-)?\d{1,13}$/.test(v)) {
+	        v = v * 1000;
+	    } else if (/^(-)?\d{1,14}$/.test(v)) {
+	        v = v * 100;
+	    } else if (/^(-)?\d{1,15}$/.test(v)) {
+	        v = v * 10;
+	    } else if (/^(-)?\d{1,16}$/.test(v)) {
+	        v = v * 1;
+	    } else {
+	        // alert("时间戳格式不正确");
+	        return v;
+	    }
+		var dateObj = new Date(v);
+		var currDate = new Date();
+	    if (dateObj.format('yyyy') == "NaN") {
+	    	 // alert("时间戳格式不正确");
+	    	 return v;
+	    }
+	    var UnixTimeToDate = ''
+	    if(dateObj.getFullYear() != currDate.getFullYear()) UnixTimeToDate += dateObj.getFullYear() + '-'
+	    if(dateObj.getFullYear() != currDate.getFullYear() || dateObj.getDate() != currDate.getDate()) {
+	    	UnixTimeToDate += (dateObj.getMonth() + 1) + '-' + dateObj.getDate() + ' ';
+	    }
+	    UnixTimeToDate += dateObj.getHours() + ':' + dateObj.getMinutes();
+	    return UnixTimeToDate;
     }
-
 })(jQuery);
 
 
@@ -85,6 +128,16 @@ import {eventbus, EVENTS} from '../js/bus'
 				var uid = window.thirdtools.getUid()
 				if(uid && uid != '') {
 					return uid
+				}
+				return ''
+			}
+			return ''
+		},
+		getArea() {
+			if(window.thirdtools&&window.thirdtools.getArea) {
+				var area = window.thirdtools.getArea()
+				if(area && area != '') {
+					return area
 				}
 				return ''
 			}

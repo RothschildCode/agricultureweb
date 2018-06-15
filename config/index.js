@@ -45,11 +45,11 @@ module.exports = {
             }
         },
         '/file': {
-            target: 'http://127.0.0.1:55662/',
+            target: 'http://39.107.99.122:8080/',
             changeOrigin: true, // 如果接口跨域，需要进行这个参数配置
             pathRewrite: {
                 '^/file': '/'
-            }
+            } 
         }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
