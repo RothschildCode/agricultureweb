@@ -60,6 +60,7 @@
     "html-webpack-plugin": "^2.28.0",
     "http-proxy-middleware": "^0.17.3",
     "jquery": "^3.2.1",
+    "jsonp": "^0.2.1",
     "less": "^2.7.3",
     "less-loader": "^4.0.5",
     "mescroll": "^0.0.3",

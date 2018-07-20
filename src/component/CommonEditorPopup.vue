@@ -18,7 +18,7 @@
 
 			<div class="row">
 			  	<div class="media-bar" style="border: none;">
-			  		<div class="btn-item" @click="browBtnClick">
+			  		<div v-if="supportEmoji" class="btn-item" @click="browBtnClick">
 			  			<i class="icon iconfont icon-emoji"></i>
 			  		</div>
 			  		<div v-if="supportImage" class="btn-item">
@@ -42,14 +42,10 @@
 </template>
 
 <script>
-	import {gethttp} from '../common/http'
-	import {eventbus, EVENTS} from '../js/bus'
-	import BrowPanel from '../component/BrowPanel'
-	import EnclosureUploader from '../js/EnclosureUploader'
+	import BrowPanel from './BrowPanel'
+	import ImageUploader from '../plugins/imguploader'
 
-	let http = gethttp({
-		indicator: true
-	})
+	import {v, EVENTS} from '../core/vbus'
 
 	export default {
 		data() {
@@ -69,15 +65,16 @@
 				name: null,
 				brow: null,
 				domObj: {},
-				supportImage: false
+				supportImage: false,
+				supportEmoji: false
 			}
 		},
 		created() {
 			var self = this
-			eventbus.$on(EVENTS.SEL_BROW, (d) => {
+			v.$on(EVENTS.SEL_BROW, (d) => {
 				self.comment += d
 			})
-			eventbus.$on(EVENTS.OPEN_COMM_POPUP, (data) => {
+			v.$on(EVENTS.OPEN_COMM_POPUP, (data) => {
 				data.pid ? self.pid = data.pid : null
 				data.cid ? self.cid = data.cid : null
 				data.name ? self.name = data.name : null
@@ -161,35 +158,28 @@
 			},
 			reply() {
 				var self = this
-				var uploader = new EnclosureUploader()
+				var uploader = new ImageUploader()
 				uploader.upload(this.enclosures, function(urlsText) {
 					var api = self.cid ? 'insert_reply' : 'insert_comment'
-					var param = {
-						api,
-						pid: self.pid,
-						uid: '1'
-					}
-					if(self.cid) {
-						param.cid = self.cid
-						param.content = self.comment
-					}else {
-						param.comment = self.comment
-					}
-
-					http({
-						data: param,
-						method: 'post'
-					}).then((res) => {
-						if(res.data.s == 0) {
-							self.replySucc()
-						}else {
-							self.$f7.modal({
-								title: '糟糕，回复失败了:(',
-								buttons: [{
-									text: '好'
-								}]
-							})
+					self.appUtil.loginedInfo(({uid}) => {
+						var param = {
+							api,
+							uid,
+							pid: self.pid
 						}
+						if(self.cid) {
+							param.cid = self.cid
+							param.content = self.comment
+						}else {
+							param.comment = self.comment
+						}
+
+						self.$ajax({
+							data: param,
+							errorMsg: '糟糕，回复失败了:('
+						}, (data) => {
+							self.replySucc()
+						})						
 					})
 				})
 			},
@@ -205,7 +195,7 @@
 			},
 			replySucc() {
 				this.close()
-				eventbus.$emit(EVENTS.COMMENT_SUCC, {pid: this.pid, cid: this.cid})
+				v.$emit(EVENTS.COMMENT_SUCC, {pid: this.pid, cid: this.cid})
 			}
 		},
 		components: {

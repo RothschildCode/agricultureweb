@@ -22,7 +22,7 @@
 		props: ['pid'],	
 		methods: {
 			onclick() {
-				app.openCommPopup({pid: this.pid})
+				this.appUtil.openCommPopup({pid: this.pid})
 			}
 		}
 	}

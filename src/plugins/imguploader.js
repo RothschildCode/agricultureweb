@@ -1,4 +1,4 @@
-import {getFileHttp} from '../common/http'
+import {getFileHttp} from '../core/http'
 
 export default class EnclosureUploader {
 	constructor() {
@@ -11,7 +11,7 @@ export default class EnclosureUploader {
 			callback()
 		} else {
 			var _this = this
-
+			files = this.filter(files)
 			if(files && files.length > 0) {
 				for(var i = 0; i < files.length; i++) {
 					_this.poster({
@@ -23,7 +23,7 @@ export default class EnclosureUploader {
 						method: 'post'
 					}).then((res) => {
 						_this.resultSet.push(res.data)
-						if(_this.resultSet.length >= files.length) {
+						if(_this.resultSet.length == files.length) {
 							callback(_this.urlsText())
 						}
 					})
@@ -43,6 +43,16 @@ export default class EnclosureUploader {
 			url += this.resultSet[i]
 		}
 		return url
+	}
+
+	filter(files) {
+		var newFiles = new Array()
+		for(var i = 0; i < files.length; i++) {
+			if(files[i] && files[i] != '') {
+				newFiles.push(files[i])
+			}
+		}
+		return newFiles
 	}
 
 }

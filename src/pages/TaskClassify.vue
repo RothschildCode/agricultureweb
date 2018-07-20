@@ -35,12 +35,6 @@
 </template>
 
 <script>
-	import {gethttp} from '../common/http'
-
-	let http = gethttp({
-		indicator: true
-	})
-
 	export default {
 		data() {
 			return {
@@ -52,26 +46,16 @@
 		},
 		methods: {
 			getData() {
-				var _this = this
-				var area = app.getArea()
-				if(area == '') {
-					return
-				}
-				var data = {
-					api: 'site_check_group',
-					area
-				}
-				var _this = this
-
-				if(app.getUid() == '') return
-
-				http({
-					data,
-					method: 'post'
-				}).then((res) => {
-					_this.list = res.data.data
-				}).catch((err) => {
-					alert(err)
+				var self = this
+				this.appUtil.loginedInfo(({ area}) => {
+					self.$ajax({
+						data: {
+							api: 'site_check_group',
+							area
+						}
+					}, (data) => {
+						self.list= data
+					})
 				})
 			},
 			onclick(data) {

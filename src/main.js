@@ -11,7 +11,11 @@ import 'framework7/dist/css/framework7.ios.colors.min.css'
 import 'framework7-icons/css/framework7-icons.css'
 import './plugins/mescroll/mescroll.css'
 import './css/app.less'
+import {$ajax} from './core/http.js'
+import appUtil from './common/app'
 
+Vue.prototype.$ajax = $ajax
+Vue.prototype.appUtil = appUtil
 
 export function initEntry(App) {
   Vue.use(Framework7Vue)

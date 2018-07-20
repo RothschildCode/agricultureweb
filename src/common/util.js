@@ -1,6 +1,10 @@
 import jQuery from 'jquery'
 import {brows} from './browsMap'
-import {eventbus, EVENTS} from '../js/bus'
+
+window.thirdtools = {
+    getUid() {return 288},
+    getArea() {return 1}
+}
 
 Date.prototype.format = function (format) {
     var date = {
@@ -78,82 +82,27 @@ Date.prototype.format = function (format) {
 	    	 // alert("时间戳格式不正确");
 	    	 return v;
 	    }
+
+	    function dateUnitToString(unit) {
+	    	if(parseInt(unit) < 10) {
+	    		return "0" + unit
+	    	}
+	    	return unit
+	    }
+
 	    var UnixTimeToDate = ''
 	    if(dateObj.getFullYear() != currDate.getFullYear()) UnixTimeToDate += dateObj.getFullYear() + '-'
-	    if(dateObj.getFullYear() != currDate.getFullYear() || dateObj.getDate() != currDate.getDate()) {
-	    	UnixTimeToDate += (dateObj.getMonth() + 1) + '-' + dateObj.getDate() + ' ';
-	    }
-	    UnixTimeToDate += dateObj.getHours() + ':' + dateObj.getMinutes();
+	    // if(dateObj.getFullYear() != currDate.getFullYear() || dateObj.getDate() != currDate.getDate()) {
+	    // 	UnixTimeToDate += (dateObj.getMonth() + 1) + '-' + dateObj.getDate() + ' ';
+	    // }
+	    UnixTimeToDate += (dateUnitToString(dateObj.getMonth() + 1)) + '-' + dateUnitToString(dateObj.getDate()) + ' ';
+	    UnixTimeToDate += dateUnitToString(dateObj.getHours()) + ':' + dateUnitToString(dateObj.getMinutes());
 	    return UnixTimeToDate;
     }
-})(jQuery);
-
-
-(function(app) {
-	app = {
-		get: (k) => {
-			var jdata = localStorage.getItem(k)
-			if(!jdata) {
-				return null
-			}
-			var odata = JSON.parse(jdata)
-			if(odata.needParse) {
-				return JSON.parse(odata.data)
-			}
-			return odata.data
-		},
-		set: (k, v) => {
-			var data = {
-				needParse: false
-			}
-			if(v instanceof String) {
-				data.data = v
-			}else {
-				data.needParse = true
-				data.data = JSON.stringify(v)
-			}
-			localStorage.setItem(k, JSON.stringify(data))
-		},
-		isLogin() {
-			var isLogin = true
-			var uid = this.getUid()
-			if(uid == '') {
-				this.openLoginActivity()
-				isLogin = false
-			}
-			return isLogin
-		},
-		getUid() {
-			if(window.thirdtools&&window.thirdtools.getUid) {
-				var uid = window.thirdtools.getUid()
-				if(uid && uid != '') {
-					return uid
-				}
-				return ''
-			}
-			return ''
-		},
-		getArea() {
-			if(window.thirdtools&&window.thirdtools.getArea) {
-				var area = window.thirdtools.getArea()
-				if(area && area != '') {
-					return area
-				}
-				return ''
-			}
-			return ''
-		},
-		openLoginActivity() {
-			if(window.thirdtools && window.thirdtools.goLogin) {
-				window.thirdtools.goLogin()
-			}
-		},
-		openCommPopup(data) {
-			if(!this.isLogin()) return
-			eventbus.$emit(EVENTS.OPEN_COMM_POPUP, data)
-		}
-	}
-
-	window.app = app
-
-})({})
+    $.stringEmpty = function(str) {
+        if(!str || str == '') {
+            return true
+        }
+        return false
+    }
+})(jQuery)

@@ -1,13 +1,13 @@
 <template>
-	<div class="floor more">
+	<div class="floor cmment-item" @click="onreply">
 		<div class="floor-wrap">
 			<div class="infos clearfix">
 				<div class="avatar">
-					<img :src="data.header">
+					<profile :src="data.header"></profile>
 				</div>
 				<div class="author-time">
 					<div class="author-icons">
-						<span class="author" v-html="data.username"></span>
+						<a class="author" v-html="data.username"></a>
 					</div>
 					<div class="time">
 						<!-- <span v-html="data.dateline"></span> -->
@@ -20,7 +20,7 @@
 				<span class="content" v-html="data.comment"></span>
 				<div class="info">
 					<span class="label-time" v-html="data.dateline"></span>
-					<b class="btn-reply" @click="onreply">回复</b>
+					<b class="btn-reply">回复</b>
 				</div>
 				<div v-if="replies.length > 0" class="reply-wrap">
 					<ul>
@@ -38,8 +38,10 @@
 
 <script type="text/javascript">
 	import MoreOperationBtn from '../component/MoreOperationBtn'
-	import {http} from '../common/http'
-	import {eventbus, EVENTS} from '../js/bus'
+	import Profile from './Profile'
+
+	import {v, EVENTS} from '../core/vbus'
+
 	export default {
 		props: ['data'],
 		data() {
@@ -50,35 +52,37 @@
 		created() {
 			this.getReplylist()
 			var self = this
-			eventbus.$on(EVENTS.COMMENT_SUCC, (data) => {
+			v.$on(EVENTS.COMMENT_SUCC, (data) => {
 				if(data.cid && data.cid == self.data.id) {
 					self.getReplylist()
 				}
-			})			
+			})		
 		},
 		methods: {
+			dataHandler(list) {
+				for(var i = 0; i < list.length; i++) {
+					list[i].dateline = $.longToDate(list[i].dateline)
+					list[i].content = $.parseRichText(list[i].content)
+				}
+				this.replies = list
+			},
 			getReplylist() {
-				var _this = this
-				http({
+				var self = this
+				this.$ajax({
 					data: {
 						api: 'reply_list',
 						cid: this.data.id
-					},
-					method: 'post'
-				}).then((res) => {
-					var list = res.data.data
-					for(var i = 0; i < list.length; i++) {
-						list[i].dateline = $.longToDate(list[i].dateline)
-						list[i].content = $.parseRichText(list[i].content)
 					}
-					_this.replies = list
+				}, (data) => {
+					self.dataHandler(data)
 				})
 			},
 			onreply() {
-				app.openCommPopup({cid: this.data.id, name: this.data.username})
+				this.appUtil.openCommPopup({cid: this.data.id, name: this.data.username})
 			}
 		},
 		components: {
+			Profile,
 			MoreOperationBtn
 		}
 	}

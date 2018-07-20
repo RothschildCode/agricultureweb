@@ -1,6 +1,6 @@
 <template>
-	<a href="#" class="floating-button color-pink" @click="onclick">
-		<i class="f7-icons">add</i>
+	<a href="#" class="floating-button" @click="onclick">
+		发帖
 	</a>
 </template>
 
@@ -9,8 +9,19 @@
 		props: ['type', 'page'],
 		methods: {
 			onclick() {
-				if(!app.isLogin(this)) return
-				window.location.href = 'reply.html?webview_transition&type=' + this.type + '&pageid=' + this.page
+				if(this.appUtil.isLogin()) {
+					// this.appUtil.putCache('editor_page_params', {
+					// 	type: this.type,
+					// 	pageId: this.page
+					// })
+					// this.appUtil.applyNativeMethod('goPublish')
+					this.appUtil.putCache('channels_page_params', {
+						type: this.type,
+						pageId: this.page,
+						target: 2
+					})
+					window.location.href = 'channels.html?webview_transition'
+				}
 			}
 		}
 	}

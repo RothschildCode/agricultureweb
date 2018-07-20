@@ -1,10 +1,10 @@
 <template>
 	<div class="navbar">
 	  <div class="navbar-inner h-auto">
-	    <div class="subnavbar" ref="scrollContent">
+	    <div class="subnavbar tabs-row" ref="scrollContent">
 	      <div class="buttons-row">
-	      <a href="#" class="button tab-link" :class="{active: activeIndex == 0}" @click="navClick(0)" :ref="activeIndex == 0 ? 'activeDom' : ''">全部</a>
-	      <a v-if="$index!=0" v-for="(item, $index) in list" href="#" class="button tab-link" :class="{active: $index == activeIndex}" v-html="item.cname" @click="navClick($index)" :ref="$index == activeIndex ? 'activeDom' : ''"></a>
+	      <a v-if="firstDefault" href="#" class="button tab-link" :class="{active: activeIndex == 0}" @click="navClick(0)" :ref="activeIndex == 0 ? 'activeDom' : ''">全部</a>
+	      <a v-for="(item, $index) in list" href="#" class="button tab-link" :class="{active: $index == activeIndex}" :style="itemStyle" v-html="item.cname" @click="navClick($index)" :ref="$index == activeIndex ? 'activeDom' : ''"></a>
 	      <a v-if="more" class="button tab-link more" @click="navClick(-1)">
 	      	<i class="f7-icons fontsize-2x">more</i>
 	      </a>
@@ -15,9 +15,25 @@
 </template>
 
 <script type="text/javascript">
-	import {eventbus, EVENTS} from '../js/bus'
+	import {v, EVENTS} from '../core/vbus'
+	
 	export default {
-		props: ['list', 'activeIndex', 'more', 'mescrollArr'],
+		props: ['list', 'activeIndex', 'more', 'mescrollArr', 'firstDefault', 'widthAve'],
+		data() {
+			return {
+				firstDef: this.firstDefault == null ? true : this.firstDefault,
+				wAve: this.widthAve == true ? true : false,
+				itemStyle: null
+			}
+		},
+		created() {
+			if(this.wAve) {
+				var len = this.list.length + (this.firstDef ? 1 : 0)
+				this.itemStyle = {
+					width: document.body.clientWidth / len + 'px'
+				}
+			}
+		},
 		updated() {
 			var mescrollArr = this.mescrollArr
 			if(mescrollArr && mescrollArr[this.activeIndex]) {
@@ -44,7 +60,7 @@
 		},
 		methods: {
 			navClick(index) {
-				eventbus.$emit(EVENTS.SUBNAV_ITEM_TAP, index)
+				v.$emit(EVENTS.SUBNAV_ITEM_TAP, index)
 			}
 		}
 	}

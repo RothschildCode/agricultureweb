@@ -4,53 +4,69 @@
     <f7-views>
       <f7-view id="main-view"  main>
         <f7-pages>
-			<div class="page page-bg-fill reply-page">	
+			<div class="page reply-page">	
 				<canvas ref="cvs" style="display:none;"></canvas>
 			  <div class="page-content">
-			  	<div class="editor_panel">
-			  		<div class="editor_title_wrap">
-			  			<input v-if="type==1" v-model="subject" type="text" class="editor_input" name="" placeholder="标题">
-			  		</div>
-			  		<textarea v-model="comment" rows="8" class="editor_input editor_content" :placeholder="type==1?'我来说两句':type==2?'发表您的回复':''"></textarea>
-			  	</div>
 
-			  	<div class="reply-bottom-panel">
-					<a v-if="type==1" class="chip topic-chip open-popup" data-popup=".popup-topic">
-						<div class="chip-label">#{{selTopic.cname||'未选择话题'}}#</div>
-					</a>			  	
+		<div v-if="channel" class="list-block">
+			<ul>
+				<li class="item-content">
+					<div class="item-media">
+						<i class="icon icon-f7">
+							<img :src="channel.icon">
+						</i>
+					</div>
+					<div class="item-inner">
+						<div>
+							<div class="item-title" v-html="channel.cname"></div>
+							<!-- <div class="item-subtitle" v-html="data.channel.description"></div> -->
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>			  
 
-				  	<div class="media-bar">
-				  		<div class="btn-item" @click="changePanel(1)">
-				  			<i v-if="showCode != 1" class="icon iconfont icon-emoji"></i>
-				  			<i v-if="showCode == 1" class="icon iconfont active icon-emojifill"></i>
-				  		</div>
-				  		<div v-if="type==1" class="btn-item" @click="changePanel(2)">
-				  			<i v-if="showCode != 2" class="icon iconfont icon-xiangji"></i>
-				  			<i v-if="showCode == 2" class="icon iconfont active icon-camerafill"></i>
-				  			<input accept="image/*" capture="camera" type="file" name="" class="upload-input" ref="uploadInput1" @change="uploadChange">
-				  		</div>
-				  		<div v-if="type==1" class="btn-item" @click="changePanel(2)">
-				  			<i v-if="showCode != 2" class="icon iconfont icon-pic"></i>
-				  			<i v-if="showCode == 2" class="icon iconfont active icon-picfill"></i>
-				  			<input accept="image/*" capture="camera" type="file" name="" class="upload-input">
-				  		</div>
-				  		<div v-if="type==1" class="btn-item">
-				  			<a href="#" class="icon iconfont open-popup btn-topic" data-popup=".popup-topic">#</a>
-				  		</div>
+				<a href="#" class="floating-button" @click="publish()">发布</a>
 
-				  		<div class="btn-item send">
-				  			<span @click="submit()">{{type==1?'发布':type==2?'回复':''}}</span>
-				  		</div>
+				<div class="content-block-title">帖子标题</div>
 
-				  	</div>			  		
-			  	</div>
-			  	<brow-panel v-if="showCode == 1"></brow-panel>
-				<multi-preview v-if="showCode == 2" :data="enclosures" :inputDom="inputDom"></multi-preview>
+				<div class="list-block">
+					<ul>
+						<li>
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-input">
+										<input v-model="subject" type="text" name="" placeholder="给帖子起一个标题吧">
+									</div>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>	
+
+				<div class="content-block-title">帖子内容</div>
+
+				<div class="list-block">
+					<ul>
+						<li>
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-input">
+										<textarea v-model="comment" placeholder="我来说两句"></textarea>
+									</div>
+								</div>
+							</div>
+							<multi-preview :data="enclosures" :inputDom="inputDom"></multi-preview>
+<!-- 							<a class="chip topic-chip open-popup" data-popup=".popup-topic">
+								<div class="chip-label">#{{selTopic.cname||'未选择话题'}}#</div>
+							</a> -->							
+						</li>
+					</ul>
+				</div>
+
 			  </div>
 
-			  <!-- <common-footer-nav></common-footer-nav> -->
-
-			</div>  
+			</div>
         </f7-pages>
       </f7-view>
     </f7-views>
@@ -58,7 +74,7 @@
     <div class="popup popup-topic">
     	<div class="navbar">
     		<div class="navbar-inner h-auto">
-    			<div class="subnavbar">
+    			<div class="subnavbar tabs-row">
     				<div class="buttons-row">
     					<a class="button tab-link" @click="closePopup">
     						关闭
@@ -91,17 +107,11 @@
 </template>
 
 <script>
-	import {gethttp} from '../common/http'
-	import {eventbus, EVENTS} from '../js/bus'
 	import BrowPanel from '../component/BrowPanel'
-	import EnclosureUploader from '../js/EnclosureUploader'
-	// import CommonFooterNav from '../component/CommonFooterNav'
-	// import CommonEditorPopup from '../component/CommonEditorPopup'
+	import ImageUploader from '../plugins/imguploader'
 	import MultiPreview from '../component/MultiPreview'
 
-	let http = gethttp({
-		indicator: true
-	})
+	import {v, EVENTS} from '../core/vbus'
 
 	export default {
 		data() {
@@ -129,14 +139,18 @@
 		},
 		created() {
 			var _this = this
-			eventbus.$on(EVENTS.SEL_BROW, (d) => {
+			v.$on(EVENTS.SEL_BROW, (d) => {
 				_this.comment += d
 			})
-			this.replyType = $.getUrlParam('reply_type')
-			this.pid = $.getUrlParam('pid')
-			this.cid = $.getUrlParam('cid'),
-			this.type = $.getUrlParam('type')
-			this.pageId = $.getUrlParam('pageid')
+
+			var params = this.appUtil.getCache('editor_page_params')
+
+			this.replyType = params.replyType
+			this.pid = params.pId
+			this.cid = params.cId
+			this.type = params.type
+			this.pageId = params.pageId
+			this.channel = params.channel
 
 			if(this.type == 1) {
 				this.getTopics()
@@ -145,17 +159,14 @@
 		},
 		methods: {
 			getTopics() {
-				var _this = this
-				var data = {
-					api: 'page_type',
-					pageid: this.pageId
-				}
-				http({
-					data,
-					method: 'post'
-				}).then((res) => {
-					var list = res.data.data
-					_this.topics = list
+				var self = this
+				this.$ajax({
+					data: {
+						api: 'page_type',
+						pageid: this.pageId
+					}
+				}, (data) => {
+					self.topics = data
 				})
 			},
 			uploadChange(e) {
@@ -200,19 +211,7 @@
 					code = this.showCode == code ? 0 : code
 				}
 				this.showCode = code
-			},
-			submit() {
-				switch(this.type) {
-					case '1':
-						this.publish()
-						break
-					case '2':
-						this.reply()
-						break
-					default:
-						break
-				}
-			},			
+			},	
 			publish() {
 				if(this.subject == '') {
 					this.$f7.modal({
@@ -232,49 +231,55 @@
 					})
 					return
 				}
-				if(!this.selTopic.cid) {
+
+				var self = this
+
+				if(this.channel.cid) {
 					this.$f7.modal({
-						title: '选择一个话题吧:(',
+						title: '确定要发帖吗？',
 						buttons: [{
-							text: '嗯，好的'
+							text: '发布',
+							blod: true,
+							onClick() {
+								var uploader = new ImageUploader()
+
+								self.appUtil.loginedInfo(({uid, area}) => {
+									uploader.upload(self.enclosures, (urlsText) => {
+										self.$ajax({
+											data: {
+												api: 'publish_post',
+												cid: self.channel.cid,
+												fid: 2,
+												subject: self.subject,
+												message: self.comment,
+												pageid: self.pageId,
+												img: urlsText,
+												uid,
+												area
+											},
+											errorMsg: '发布失败了:(',
+											showLoading: true
+										},(data) => {
+											var msg = '发布成功:)'
+											self.$f7.modal({
+												title: msg,
+												buttons: [{
+													text: '好',
+													onClick: function() {
+														self.appUtil.applyNativeMethod('goFinash')
+													}
+												}]
+											})
+										})
+									})					
+								})
+							}
+						}, {
+							text: '取消'
 						}]
 					})
 					return
 				}
-
-				var _this = this
-
-				var uploader = new EnclosureUploader()
-
-				uploader.upload(this.enclosures, (urlsText) => {
-					var param = {
-						api: 'publish_post',
-						cid: _this.selTopic.cid,
-						fid: 2,
-						subject: _this.subject,
-						message: _this.comment,
-						pageid: _this.pageId,
-						img: urlsText
-					}
-					http({
-						data: param,
-						method: 'POST'
-					}).then((res) => {
-						var msg = ''
-						if(res.data.s == 0) {
-							msg = '发布成功:)'
-						}else {
-							msg = '发布失败了:('
-						}
-						_this.$f7.modal({
-							title: msg,
-							buttons: [{
-								text: '好'
-							}]
-						})
-
-					})
-				})
 			},
 			reply() {
 				if(this.comment == '') {
@@ -286,33 +291,28 @@
 					})
 					return
 				}
-				var _this = this
-				var uploader = new EnclosureUploader()
+				var self = this
+				var uploader = new ImageUploader()
 				uploader.upload(this.enclosures, function(urlsText) {
-					var api = _this.cid ? 'insert_reply' : 'insert_comment'
+					var api = self.cid ? 'insert_reply' : 'insert_comment'
 					var param = {
 						api,
-						pid: _this.pid,
+						pid: self.pid,
 						uid: '1'
 					}
-					if(_this.cid) {
-						param.cid = _this.cid
-						param.content = _this.comment
+					if(self.cid) {
+						param.cid = self.cid
+						param.content = self.comment
 					}else {
-						param.comment = _this.comment
+						param.comment = self.comment
 					}
 
-					http({
+					self.$ajax({
 						data: param,
-						method: 'post'
-					}).then((res) => {
-						var msg = ''
-						if(res.data.s == 0) {
-							msg = '回复成功:)'
-						}else {
-							msg = '糟糕，回复失败了:('
-						}
-						_this.$f7.modal({
+						errorMsg: '糟糕，回复失败了:('
+					}, (data) => {
+						var msg = '回复成功:)'
+						self.$f7.modal({
 							title: msg,
 							buttons: [{
 								text: '好'

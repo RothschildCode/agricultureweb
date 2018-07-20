@@ -11,7 +11,7 @@
 					<div class="item-inner">
 						<div>
 							<div class="item-title" v-html="data.channel.cname"></div>
-							<div class="item-subtitle" v-html="data.channel.description"></div>
+							<!-- <div class="item-subtitle" v-html="data.channel.description"></div> -->
 						</div>
 					</div>
 				</li>

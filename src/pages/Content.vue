@@ -4,15 +4,15 @@
     <f7-views>
       <f7-view id="main-view"  main>
         <f7-pages>
-			<div data-page="news-content" class="page toobar-fixed news-content-page" :class="{'bg-fill': comments.length < 1}">
+			<div data-page="news-content" class="page toobar-fixed news-content-page">
 				<div class="page-content">
 					<div v-if="data" class="floor-list">
 						<h2 class="subject" v-html="data.subject"></h2>
 						<div class="floor master more">
 							<div class="floor-wrap">
 								<div class="infos clearfix">
-									<div class="avatar">
-										<img :src="data.header">
+									<div class="avatar"> 
+										<profile :src="data.header"></profile>
 									</div>
 									<div class="author-time">
 										<div class="author-icons">
@@ -30,26 +30,39 @@
 									<span class="title" v-html="data.message"></span>
 								</div>
 
-								<media-wrap :medias="data.img" :block="true"></media-wrap>
+								<media-wrap v-if="pageId == 1" :medias="data.img" :block="true"></media-wrap>
 
 							</div>
 						</div>
 
-						<div class="floor-list">
-							<comment v-for="(item, $index) in comments" :data="item" :key="$index"></comment>				
-						</div>
-
 					</div>
+
+					<div class="tabs-row">
+						<div class="buttons-row">
+							<a id="mcomments" href="#mcomments" class="button tab-link active">评论  {{comments.length}}</a>
+						</div>
+					</div>
+
+					<div class="floor-list">
+						<comment v-if="comments.length > 0" v-for="(item, $index) in comments" :data="item" :key="$index"></comment>
+						<div v-if="comments.length < 1" style="width: 100%; padding: 2em 0; text-align: center;">
+							<span style="">暂无评论，抢沙发~</span>
+						</div>
+					</div>
+
 				</div>
 
 				<common-footer-nav :pid="pid"></common-footer-nav>
 
 			</div>
+
         </f7-pages>
       </f7-view>
     </f7-views>
 
 	<common-editor-popup></common-editor-popup>
+
+	<refresh-background></refresh-background>
 
   </div>
 </template>
@@ -59,12 +72,9 @@
 	import Comment from '../component/Comment'
 	import CommonFooterNav from '../component/CommonFooterNav'
 	import CommonEditorPopup from '../component/CommonEditorPopup'
-	import {gethttp} from '../common/http'
-	import {eventbus, EVENTS} from '../js/bus'
-
-	let http = gethttp({
-		indicator: true
-	})
+	import Profile from '../component/Profile'
+	import RefreshBackground from '../component/RefreshBackground'
+	import {v, EVENTS} from '../core/vbus'
 
 	export default {
 		data() {
@@ -76,21 +86,38 @@
 				pid: null,
 				cid: null,
 				external: true,
-				comm: null
+				comm: null,
+				mcomments: null,
+				pageId: 1
 			}
 		},
 		created() {
 			var self = this
-			eventbus.$on(EVENTS.COMMENT_SUCC, (data) => {
+			v.$on(EVENTS.COMMENT_SUCC, (data) => {
 				if(!data.cid) {
 					self.getComments()
 				}
 			})
+			v.$on(EVENTS.MEDIAS_LOADED, () => {
+				// alert(1)
+				if(self.mcomments) {
+					self.scrollCommentsArea()
+				}
+			})
 			this.pid = $.getUrlParam('pid')
+			this.mcomments = $.getUrlParam('mcomments')
+			this.pageId = $.getUrlParam('pageId')
 			this.getContent()
 			this.getComments()
 		},
 		methods: {
+			scrollCommentsArea() {
+				console.log($('#mcomments').offset().top)
+				if(this.mcomments) {
+					//滑动到评论区
+					$('.page-content').animate({scrollTop: $('#mcomments').offset().top}, 500)
+				}
+			},
 			openCommPopup() {
 				this.external = true
 			},
@@ -99,38 +126,33 @@
 				this.$f7.popover('.popover-more', e.currentTarget);
 			},
 			getContent() {
-				var _this = this
-				http({
+				var self = this
+				this.$ajax({
 					data: {
 						api: 'post_details',
 						pid: this.pid
 					},
-					method: 'post'
-				}).then((res) => {
-					var d = res.data.data
-					d.dateline = $.longToDate(d.dateline)
-					_this.data = d
-				}).catch((err) => {
-
+					pageRefresh: true
+				}, (data) => {
+					data.dateline = $.longToDate(data.dateline)
+					self.data = data
 				})
 			},
 			getComments() {
-				var _this = this
-				http({
+				var self= this
+				this.$ajax({
 					data: {
 						api: 'post_comment_list',
 						pid: this.pid
 					},
-					method: 'post'
-				}).then((res) => {
-					var list = res.data.data
+					errorMsg: '获取评论列表失败:('
+				}, (data) => {
+					var list = data
 					for(var i = 0; i < list.length; i++) {
 						list[i].dateline = $.longToDate(list[i].dateline)
 						list[i].comment = $.parseRichText(list[i].comment)
 					}
-					_this.comments = list
-				}).catch((err) => {
-
+					self.comments = list
 				})
 			},
 			showActions() {
@@ -146,7 +168,7 @@
 				this.$f7.actions(buttons)
 			},
 			goReply() {
-				if(!app.isLogin(this)) return
+				if(!this.appUtil.isLogin()) return
 				var url = 'reply.html?webview_transition&type=2&pid=' + this.pid
 				if(this.cid) {
 					url = url + '&cid=' + this.cid
@@ -158,7 +180,9 @@
 			MediaWrap,
 			Comment,
 			CommonFooterNav,
-			CommonEditorPopup
+			CommonEditorPopup,
+			Profile,
+			RefreshBackground
 		}
 	}
 </script>

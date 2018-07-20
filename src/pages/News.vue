@@ -20,6 +20,7 @@
         </f7-pages>
       </f7-view>
     </f7-views>
+    <refresh-background></refresh-background>
   </div>
 </template>
 
@@ -27,10 +28,10 @@
 	import NewsContainer from '../component/NewsContainer'
 	import Subnavbar from '../component/Subnavbar'
 	import MediaWrap from '../component/MediaWrap'
-	import {eventbus, EVENTS} from '../js/bus'
-	import {http} from '../common/http'
-
+	import RefreshBackground from '../component/RefreshBackground'
 	import Swiper from 'swiper'
+
+	import {v, EVENTS} from '../core/vbus'
 
 	export default {
 		data() {
@@ -39,12 +40,13 @@
 				swiper: null,
 				tabIndex: 0,
 				pageId: 2,
-				mescrollArr: []
+				mescrollArr: [],
+				dataCacheName: 'app_data_cache_subnavbars'
 			}
 		},
 		created() {
-			eventbus.$on(EVENTS.SUBNAV_ITEM_TAP, this.tabChange)
-			this.getSubnavbars()
+			v.$on(EVENTS.SUBNAV_ITEM_TAP, this.tabChange)
+			this.init()
 		},
 		updated() {
 			if(this.swiper == null) {
@@ -60,22 +62,31 @@
 			}
 		},
 		methods: {
+			init() {
+				var subnavbars = this.appUtil.getCache(this.dataCacheName)
+				if(subnavbars) {
+					this.subnavbarItems = subnavbars
+				}
+				this.getSubnavbars()
+			},
 			tabChange(index) {
 				this.tabIndex = index
 				this.swiper.slideTo(index, 0)
 			},			
 			getSubnavbars() {
-				var _this = this
-				var data = {
-					api: 'page_type',
-					pageid: this.pageId
-				}
-				http({
-					data,
-					method: 'post'
-				}).then((res) => {
-					var list = res.data.data
-					_this.subnavbarItems = list
+				var self = this
+				this.$ajax({
+					data: {
+						api: 'page_type',
+						pageid: this.pageId
+					},
+					pageRefresh: !this.subnavbarItems.length > 1
+				}, (data) => {
+					data.unshift({
+						cname: '全部'
+					})
+					self.appUtil.putCache(self.dataCacheName, data)
+					self.subnavbarItems = data
 				})
 			},
 			goPublish() {
@@ -85,7 +96,8 @@
 		components: {
 			NewsContainer,
 			Subnavbar,
-			MediaWrap
+			MediaWrap,
+			RefreshBackground
 		}
 	}
 </script>

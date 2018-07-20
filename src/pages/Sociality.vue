@@ -31,10 +31,9 @@
 	import Subnavbar from '../component/Subnavbar'
 	import MediaWrap from '../component/MediaWrap'
 	import FloatButton from '../component/FloatButton'
-	import {eventbus, EVENTS} from '../js/bus'
-	import {http} from '../common/http'
-
 	import Swiper from 'swiper'
+
+	import {v, EVENTS} from '../core/vbus'
 
 	export default {
 		data() {
@@ -43,13 +42,20 @@
 				pageId: 1,
 				tabIndex: 0,
 				swiper: null,
-				channel: null
+				channel: null,
+				dataCacheName: 'app_data_cache_socialities'
 			}
 		},
 		created() {
 			var channel = $.getUrlParam('channel')
 			if(channel) {
-				this.channel = app.get('channels')[channel]
+				var channels = this.appUtil.getCache('app_data_cache_channels')
+				for(var i = 0; i < channels.length; i++) {
+					if(channels[i].cid == channel) {
+						this.channel = channels[i]
+						break
+					}
+				}
 				this.subnavbarItems = [this.channel]
 				return
 			}
@@ -67,7 +73,7 @@
 				}
 			]
 			this.subnavbarItems = tabs
-			eventbus.$on(EVENTS.SUBNAV_ITEM_TAP, this.tabChange)
+			v.$on(EVENTS.SUBNAV_ITEM_TAP, this.tabChange)
 		},
 		mounted() {
 			if(this.swiper == null && this.channel == null) {
@@ -86,28 +92,9 @@
 			goPublish() {
 				window.location.href = 'reply.html?webview_transition&type=1&pageid=' + this.pageId
 			},
-			getSubnavbars() {
-				if(this.cid && this.cid != '') {
-					this.subnavbarItems = app.get('subnavbar_news')
-					return
-				}
-				var _this = this
-				var data = {
-					api: 'page_type',
-					pageid: this.pageId
-				}
-				http({
-					data,
-					method: 'post'
-				}).then((res) => {
-					var list = res.data.data
-					app.set('subnavbar_news', list)
-					_this.subnavbarItems = list
-					_this.refresh()
-				})
-			},
 			tabChange(index) {
 				if(index == -1) {
+					this.appUtil.putCache('channels_page_params', {target: 1})
 					window.location.href = 'channels.html?webview_transition'
 					return
 				}

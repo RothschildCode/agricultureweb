@@ -11,7 +11,7 @@
 </template>
 
 <script type="text/javascript">
-	import {eventbus, EVENTS} from '../js/bus'
+	import {v, EVENTS} from '../core/vbus'
 	import {brows} from '../common/browsMap'
 
 	export default {
@@ -41,7 +41,7 @@
 		},
 		methods: {
 			sel(b) {
-				eventbus.$emit(EVENTS.SEL_BROW, '（#' + b.name + '）')
+				v.$emit(EVENTS.SEL_BROW, '（#' + b.name + '）')
 			},
 			open() {
 				this.panel.css('height', '11rem')

@@ -3,8 +3,8 @@
   		<canvas ref="cvs" style="display: none;"></canvas>
   		<div class="multi-content" :style="{width: (95 * (multis.length + 1)) + 10 + 'px'}">
 
-	  		<div v-if="readonly" v-for="item in urls" class="item">
-	  			<span class="item-span" :style="{backgroundImage: 'url('+item+')'}"></span>
+	  		<div v-if="readonly" v-for="(item, $index) in urls" class="item">
+	  			<span class="item-span" :style="{backgroundImage: 'url('+item+')'}" @click="preview($index)"></span>
 	  		</div>
 
 	  		<div v-if="!readonly" v-for="(item, index) in multis" class="item">
@@ -24,13 +24,13 @@
 		props: ['data', 'urls', 'readonly', 'inputDom'],
 		data() {
 			return {
-				maxSize: 320,//图片最大尺寸,用于图片压缩
+				maxSize: 960,//图片最大尺寸,用于图片压缩
 				multis: []
 			}
 		},
 		created() {
 			if(this.readonly) {
-				this.multis = this.urls
+				this.multis = this.urls || []
 			}
 		},
 		watch: {
@@ -80,7 +80,17 @@
 			},			
 			removeMulti(i) {
 				this.multis.splice(i, 1)
-			}				
+				this.data.splice(i, 1)
+			},
+			preview(index) {
+				var myPhotoBrowserStandalone = this.$f7.photoBrowser({
+				    photos : this.urls,
+				    initialSlide: index,
+				    theme: 'dark',
+				    backLinkText: '关闭'
+				})
+				myPhotoBrowserStandalone.open()
+			}
 		}
 	}
 </script>
